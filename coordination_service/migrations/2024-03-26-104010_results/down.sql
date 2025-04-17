@@ -1,1 +1,0 @@
-DROP TABLE computation_results;
