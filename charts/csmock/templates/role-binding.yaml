@@ -1,0 +1,14 @@
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#     name: coredns-update-rolebinding
+#     namespace: kube-system
+# subjects:
+#   - kind: ServiceAccount
+#     name: coredns-update-sa
+#     namespace: kube-system
+# roleRef:
+#     kind: Role
+#     name: coredns-update-role
+#     apiGroup: rbac.authorization.k8s.io

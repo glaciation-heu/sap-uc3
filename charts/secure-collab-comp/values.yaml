@@ -1,0 +1,31 @@
+client-service:
+  enabled: true
+  config:
+    coordinator_uri: "http://uc3-coordination-service.default.svc.cluster.local/coord"
+    swagger_server_uri: "http://localhost/client"
+    log_level: debug
+    service_prefix: /client
+  deployment:
+    pullSecret: dockerconfigjson-github-com
+
+csmock: 
+  enabled: true
+  config:
+    swagger_server_uri: "http://localhost/csmock"
+    log_level: debug
+    service_prefix: /csmock
+  deployment:
+    pullSecret: dockerconfigjson-github-com
+
+coordination-service:
+  config:
+    swagger_server_uri: "http://localhost/coord"
+    log_level: debug
+    service_prefix: /coord
+  deployment:
+    pullSecret: dockerconfigjson-github-com
+
+ingress:
+  namespace: ingress-nginx
+  enabled: true
+  # host: localhost

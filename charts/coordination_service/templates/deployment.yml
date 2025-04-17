@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "service.fullname" . }}
+  labels:
+    app: {{ include "service.fullname" . }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "service.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "service.fullname" . }}
+    spec:
+{{- if .Values.deployment.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.deployment.pullSecret | quote }}
+{{- end }}
+      containers:
+        - name: coordination-service
+          image: {{ .Values.deployment.image }}
+          env:
+            - name: SERVICE_PORT
+              value: {{ .Values.deployment.port | quote }}
+            - name: SWAGGER_SERVER_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "service.fullname" . }}-config # The ConfigMap this value comes from.
+                  key: swagger_server_uri
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "service.fullname" . }}-config # The ConfigMap this value comes from.
+                  key: log_level
+            - name: URL_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "service.fullname" . }}-config # The ConfigMap this value comes from.
+                  key: prefix
+            - name: DATABASE_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "service.fullname" . }}-config # The ConfigMap this value comes from.
+                  key: db_user
+            - name: DATABASE_PASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql
+                  key: password
+            - name: DATABASE_DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "service.fullname" . }}-config # The ConfigMap this value comes from.
+                  key: db_name
+            - name: DATABASE_HOST
+              value: {{ .Release.Name }}-postgresql.default.svc
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+          ports:
+            - containerPort: {{ .Values.deployment.port }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.config.service_prefix }}/ping
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.config.service_prefix }}/sys_status
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          startupProbe:
+            httpGet:
+              path: {{ .Values.config.service_prefix }}/ping
+              port: {{ .Values.deployment.port }}
+{{- if .Values.deployment.resources }}
+          resources:
+            {{- toYaml $.Values.deployment.resources | nindent 12 }}
+{{- end }}
+
+      volumes:
+        # You set volumes at the Pod level, then mount them into containers inside that Pod
+        - name: config
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: {{ include "service.fullname" . }}-config

@@ -1,0 +1,72 @@
+services:
+  database:
+    container_name: database
+    image: postgres:${POSTGRES_VERSION:-13}-alpine
+    environment:
+      POSTGRES_DB: coord_service
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_USER: ${POSTGRES_USER:-coord}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-coord-serv:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "coord_service"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+  coordination_service:
+    build: 
+      context: ./coordination_service
+    restart: on-failure
+    environment:
+      SWAGGER_SERVER_URI: "${PUBLIC_SERVICE_URI}:${COORD_SERVICE_PORT:-8081}"
+      DATABASE_USER: ${POSTGRES_USER:-coord}
+      DATABASE_DBNAME: coord_service
+      DATABASE_PASSWD: ${POSTGRES_PASSWORD:-password}
+      DATABASE_HOST: database
+      LOG_LEVEL: debug
+    ports:
+      - "8081:80"
+    depends_on:
+      - database
+    networks:
+      - default
+      - external_kind
+
+  client_service:
+    build: 
+      context: ./client_service
+    environment:
+      SWAGGER_SERVER_URI: "${PUBLIC_SERVICE_URI}:${CLIENT_SERVICE_PORT:-8080}"
+      COORDINATOR_URI: "http://coordination_service:${COORD_SERVICE_PORT:-80}"
+      PARTY_NAME: "Party 1"
+      LOG_LEVEL: debug
+    ports:
+      - "8080:80"
+    networks:
+      - default
+      - external_kind
+  csmock:
+    build: 
+      context: ./cs_mock
+    environment:
+      COMPUTATION_RESULT: "[120,324,5235]"
+      SWAGGER_SERVER_URI: "${PUBLIC_SERVICE_URI}:${CLIENT_SERVICE_PORT:-8085}"
+    ports:
+      - "8085:80"
+    networks:
+      default:
+        aliases:
+          - ephemeral-generic.default.csmock
+
+volumes:
+  db-coord-serv:
+
+networks:
+  default:
+  external_kind:
+    name: kind
+    external: false

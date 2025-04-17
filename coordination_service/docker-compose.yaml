@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  database:
+    container_name: database
+    image: postgres:${POSTGRES_VERSION:-13}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-coord_service}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_USER: ${POSTGRES_USER:-coord}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-coord-serv:/var/lib/postgresql/data:rw
+
+  coordination_service:
+    build: 
+      context: ./
+    restart: on-failure
+    environment:
+      SERVICE_PORT: "8082"
+      SWAGGER_SERVER_URI: http://127.0.0.1:8082
+      DATABASE_USER: ${POSTGRES_USER:-coord}
+      DATABASE_DBNAME: ${POSTGRES_DB:-coord_service}
+      DATABASE_PASSWD: ${POSTGRES_PASSWORD:-password}
+      DATABASE_HOST: database
+    ports:
+      - "8082:8082"
+    depends_on:
+      - database
+volumes:
+  db-coord-serv:

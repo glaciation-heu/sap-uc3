@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  client_service:
+    build: 
+      context: ./
+    environment:
+      - SERVICE_PORT=8081
+      - SWAGGER_SERVER_URI=http://ec2-18-184-15-18.eu-central-1.compute.amazonaws.com:8081
+    ports:
+      - "8081:8081"
+    networks:
+      - external_kind
+
+networks:
+  external_kind:
+    name: kind
+    external: true

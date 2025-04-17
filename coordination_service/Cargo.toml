@@ -1,0 +1,43 @@
+[package]
+name = "coordination_service"
+version = "0.1.0"
+edition = "2021"
+[[bin]]
+name = "coordination_service"
+path = "src/main.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+poem = "3.1.5"
+poem-openapi = { version = "5.1.4", features = ["swagger-ui"] }
+tracing-subscriber = "0.3.19"
+tracing = "0.1.41"
+tokio = { version = "1.42.0", features = ["macros", "rt-multi-thread"] }
+serde = "1.0.216"
+serde_json = {version = "1.0.133", features = ["arbitrary_precision"]}
+diesel = { version = "2.2.6", features = ["postgres", "chrono"] }
+diesel_migrations = "2.2.0"
+chrono = "0.4.39"
+dotenv = "0.15.0"
+base64 = "0.22.1"
+reqwest = "0.12.9"
+sysinfo = "0.33.0"
+envsubst = "0.2.1"
+mockall = "0.13.1"
+derive_more = {version = "1.0.0", features = ["from"]}
+thiserror = "2.0.11"
+
+[dev-dependencies]
+tempdir = "0.3.7"
+tempfile = "3.15.0"
+tokio-test = "0.4.4"
+rand = "0.8.5"
+
+[dev-dependencies.reqwest]
+version = "0.12.12"
+features = [ "json", "multipart", "blocking" ]
+
+[dev-dependencies.poem]
+version = "3.1.6"
+features = [ "test" ]

@@ -1,0 +1,23 @@
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: coredns-update-job
+#   namespace: kube-system
+#   annotations:
+#     "helm.sh/hook": post-install
+#     "helm.sh/hook-delete-policy": hook-succeeded
+# spec:
+#   template:
+#     spec:
+#       serviceAccountName: coredns-update-sa
+#       containers:
+#       - name: coredns-update
+#         image: bitnami/kubectl:latest
+#         command:
+#         - /bin/bash
+#         - -c
+#         - |
+#           kubectl patch deployment coredns -n kube-system --patch '{"spec":{"template":{"spec":{"volumes":[{"name":"csmock-config-volume","configMap":{"name":"csmock-coredns-plugin","items":[{"key":"ephemeral-generic.conf","path":"ephemeral-generic.conf"}]}}],"containers":[{"name":"coredns","volumeMounts":[{"name":"csmock-config-volume","mountPath":"/etc/coredns/ephemeral-generic.conf","subPath":"ephemeral-generic.conf", "readOnly": true}]}]}}}}'
+#           kubectl rollout restart deployment coredns -n kube-system
+#       restartPolicy: Never
+#   backoffLimit: 4

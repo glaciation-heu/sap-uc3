@@ -1,0 +1,48 @@
+services:
+  test_database:
+    container_name: database
+    image: postgres:${POSTGRES_VERSION:-13}-alpine
+    environment:
+      POSTGRES_DB: coord_service
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: coord
+    ports:
+      - "5432:5432"
+
+  test_coordination_service:
+    build: 
+      context: ../coordination_service
+    restart: on-failure
+    environment:
+      SWAGGER_SERVER_URI: "http://localhost"
+      DATABASE_USER: coord
+      DATABASE_DBNAME: coord_service
+      DATABASE_PASSWD: password
+      DATABASE_HOST: test_database
+      LOG_LEVEL: debug
+    depends_on:
+      - test_database
+
+  csmock:
+    build: 
+      context: ../cs_mock
+    environment:
+      SWAGGER_SERVER_URI: "http://localhost:${CLIENT_SERVICE_PORT:-8085}"
+    ports:
+      - "8085:80"
+    networks:
+      default:
+        aliases:
+          - ephemeral-generic.default.csmock
+
+  test_env:
+    image: rust:1.83.0
+    volumes:
+      - .:/application:rw
+    working_dir: /application
+    depends_on:
+      - test_database
+      - test_coordination_service
+    command: ["cargo", "test", "--test", "*"]
+    environment:
+      COORDINATOR_URI: "http://test_coordination_service:80"

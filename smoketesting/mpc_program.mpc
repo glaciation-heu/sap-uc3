@@ -1,0 +1,12 @@
+# Read one value and return it, just to check if everything is working.
+# receive inputs
+port=regint(10000)
+listen(port)
+socket_id = regint()
+acceptclientconnection(socket_id, port)
+v = sint.read_from_socket(socket_id, 1) # read the value
+
+results = Array(1, sint)
+results[0] = v[0]
+# write results
+sint.write_to_socket(socket_id, results)

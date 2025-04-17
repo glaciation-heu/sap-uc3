@@ -1,0 +1,11 @@
+apiVersion: v2
+name: coordination-service
+version: 0.1.0
+description: coordinatio-service helm chart
+maintainers:
+- name: Nicolai Huening
+  email: nicolai-huening@sap.com
+dependencies:
+  - name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: "11"
