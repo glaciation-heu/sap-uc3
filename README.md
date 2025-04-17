@@ -8,8 +8,8 @@ For component details and MPC terminology refer to the [component descriptions](
 
 * [Charts](charts/) contains the HelmCharts used to deploy the secure collaborative computation service.
 
-* [workflows](workflows/) contains definition of GitHub workflows.
-    * Testing workflow is triggered by a `push` event on the `main` branch. It will execute the unit tests of the [client_service](client_service), [computation_service](computation_service) and [cs_mock](cs_mock).
+* [.github/workflows](.github/workflows/) contains definition of GitHub workflows.
+    * Testing workflow is triggered when a new version `tag` is pushed. It will execute the unit tests of the [client_service](client_service), [computation_service](computation_service) and [cs_mock](cs_mock).
     * Docker deployment workflow is triggered if the testing workflow succeeds. This workflow will build the docker images used in the secure collaborative computation service and deploy them on the GitHub docker registry.
     * HelmChart deployment workflow ts triggered if the testing workflow succeeds. It will create a release for all HelmCharts used in the secure collaborative computation service and publish it to github-pages.
 
