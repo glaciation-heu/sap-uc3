@@ -38,18 +38,14 @@ jobs:
         id: read_git_tag
         run: echo "GIT_TAG=$(<git_tag.txt)" >> $GITHUB_ENV
 
-      - name: Coordination service cargo caching
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "./coordination_service -> target"
-          shared-key: coord-cargo-cache
-
 # Coordination-Service
       - name: Build and push Docker image for coordination_service
         id: push-coordination-service
         uses: docker/build-push-action@v6
         with:
           context: ./coordination_service
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           push: true
           tags: |
             ghcr.io/glaciation-heu/sap-uc3/coordination_service:${{ env.GIT_TAG }}
@@ -62,6 +58,8 @@ jobs:
         with:
           context: ./cs_mock
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: |
            ghcr.io/glaciation-heu/sap-uc3/cs_mock:${{ env.GIT_TAG }}
            ghcr.io/glaciation-heu/sap-uc3/cs_mock:latest
@@ -73,6 +71,8 @@ jobs:
         with:
           context: ./smoketesting
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: |
             ghcr.io/glaciation-heu/sap-uc3/smoketesting:${{ env.GIT_TAG }}
             ghcr.io/glaciation-heu/sap-uc3/smoketesting:latest
