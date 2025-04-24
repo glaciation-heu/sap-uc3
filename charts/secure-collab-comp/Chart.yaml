@@ -7,7 +7,7 @@ maintainers:
   email: nicolai-huening@sap.com
 dependencies:
   - name: client-service
-    version: 0.3.0
+    version: 0.1.0
     repository: "file://../client_service"
     condition: client-service.enabled
   - name: coordination-service
