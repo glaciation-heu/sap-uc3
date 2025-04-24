@@ -55,6 +55,7 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
           tags: | 
             ghcr.io/glaciation-heu/sap-uc3/client_service:${{ env.GIT_TAG }}
             ghcr.io/glaciation-heu/sap-uc3/client_service:latest
