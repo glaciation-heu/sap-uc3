@@ -5,7 +5,7 @@ service:
   loadBalancerIP: 172.18.3.129
 
 deployment:
-  image: ghcr.io/glaciation-heu/sap-uc3/coordination_service:0.1.0
+  image: ghcr.io/glaciation-heu/sap-uc3/coordination_service:0.1.1
   pullSecret: ""
   replicas: 1
   port: 80
