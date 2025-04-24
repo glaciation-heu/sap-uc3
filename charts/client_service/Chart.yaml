@@ -1,6 +1,6 @@
 apiVersion: v2
 name: client-service
-version: 0.3.0
+version: 0.1.0
 description: client-service helm chart
 maintainers:
 - name: Nicolai Huening
