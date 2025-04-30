@@ -46,10 +46,10 @@ pub fn delete_participation(collaboration: i32, party: i32, db_url: &str) -> Res
     Ok(())
 }
 
-pub fn upload_done(collaboration: i32, party: i32, ids: Vec<String>, db_url: &str) -> Result<()> {
+pub fn upload_done(collaboration: i32, party: i32, ids: Vec<String>, db_url: &str) -> Result<Participation> {
     use crate::schema::participations::dsl::*;
     let mut connection = establish_connection(db_url)?;
-    diesel::update(participations.find((collaboration, party)))
+    let update_participation = diesel::update(participations.find((collaboration, party)))
         .set(
             secret_ids.eq(Some(
                 ids.into_iter()
@@ -57,10 +57,10 @@ pub fn upload_done(collaboration: i32, party: i32, ids: Vec<String>, db_url: &st
                     .collect::<Vec<Option<String>>>(),
             )),
         )
-        .execute(&mut connection)?;
+        .get_result::<Participation>(&mut connection)?;
     let database_string = db_url.to_string();
     tokio::spawn(async move { check_and_execute(collaboration, &database_string).await });
-    Ok(())
+    Ok(update_participation)
 }
 
 async fn check_and_execute(collab_id: i32, db_url: &str) -> Result<()> {

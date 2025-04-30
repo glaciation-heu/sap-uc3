@@ -1,9 +1,9 @@
-use poem_openapi::{payload::{Json, PlainText}, ApiResponse, Object};
+use poem_openapi::{payload::Json, ApiResponse, Object};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use tracing::{event, Level};
 use uuid::Uuid;
-use crate::{error::Result, netaccess::RequestsClient};
+use crate::{error::{Error, Result}, netaccess::RequestsClient};
 
 use crate::cs_config::get_config;
 
@@ -40,13 +40,6 @@ pub enum GetSecretShareResponse {
     /// Computation ID response
     #[oai(status = 200)]
     OK(Json<GetSecretSharesResult>),
-
-    /// Did not find a project with this ID.
-    #[oai(status = 404)]
-    NotFound(PlainText<String>),
-
-    #[oai(status = 500)]
-    InternalServerError(PlainText<String>),
 }
 
 pub async fn get_secret_share(secret_id: String, collab_id: i32) -> Result<GetSecretShareResponse> {
@@ -76,12 +69,12 @@ pub async fn get_secret_share(secret_id: String, collab_id: i32) -> Result<GetSe
                     resp_arr[x] = Some(data);
                 } else {
                     event!(Level::ERROR, "Err: {}", s);
-                    return Ok(GetSecretShareResponse::InternalServerError(PlainText(s.to_string())));
+                    return Err(Error::InternalServerError { message: s.to_string() })
                 }
             },
             Err(e) => {
                 event!(Level::ERROR, "Err: {}", e);
-                return Ok(GetSecretShareResponse::InternalServerError(PlainText(e.to_string())));
+                return Err(Error::InternalServerError { message: e.to_string()} );
             }
         }
     }

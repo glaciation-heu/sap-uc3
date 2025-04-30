@@ -1,5 +1,5 @@
 use poem_openapi::Object;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::schema::{participations, collaborations, computation_results, csconfig, csprovider};
 use diesel::prelude::*;
@@ -7,8 +7,11 @@ use diesel::prelude::*;
 #[derive(Insertable, Object)]
 #[diesel(table_name = csconfig)]
 pub struct NewCsConfig {
+    /// The Prime as used by the MPC backend
     pub prime: String,
+    /// The auxiliary modulus R as used by the MPC backend
     pub r: String,
+    /// The multiplicative inverse for the auxiliary modulus R as used by the MPC backend
     pub rinv: String,
     pub no_ssl_validation: bool
 }
@@ -18,8 +21,11 @@ pub struct NewCsConfig {
 #[diesel(table_name = csconfig)]
 pub struct CsConfig {
     pub id: i32,
+    /// The Prime as used by the MPC backend
     pub prime: String,
+    /// The auxiliary modulus R as used by the MPC backend
     pub r: String,
+    /// The multiplicative inverse for the auxiliary modulus R as used by the MPC backend
     pub rinv: String,
     pub no_ssl_validation: bool
 }
@@ -78,7 +84,7 @@ pub struct NewParticipation {
     pub party_id: i32
 }
 
-#[derive(Queryable, Selectable, AsChangeset, Object)]
+#[derive(Queryable, Selectable, AsChangeset, Object, Serialize, Deserialize)]
 #[diesel(table_name = participations)]
 #[diesel(primary_key(collaboration_id, party_id))]
 #[diesel(belongs_to(Collaboration, foreign_key = collaboration_id))]

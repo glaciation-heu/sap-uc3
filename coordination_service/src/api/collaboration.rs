@@ -10,7 +10,7 @@ pub struct CollabApi;
 
 #[OpenApi(prefix_path = "/collaboration")]
 impl CollabApi {
-    /// Create Collaboration 
+    /// Create a new Collaboration 
     #[oai(path = "/", method = "post")]
     async fn add_collaboration(&self, payload: RegisterCollaborationPayload, db_url: Data<&String>) -> Result<RegisterCollaborationResponse> {
         post(payload, db_url.0).await
@@ -96,6 +96,15 @@ impl CollabApi {
         list(db_url.0)
     }
 
+    #[oai(path = "/:collaboration_id", method = "get")]
+    async fn get_collaboration(&self,
+        /// identifier of the collaboration
+        collaboration_id: Path<i32>,
+        db_url: Data<&String>,
+    ) -> Result<GetCollaborationResponse> {
+        get(collaboration_id.0, &db_url.0)
+    }
+
     /// Get result of collaboration
     #[oai(path = "/:collaboration_id/result_ids", method = "get")]
     async fn get_result_ids(&self, 
@@ -113,11 +122,7 @@ impl CollabApi {
         collaboration_id: Path<i32>,
         db_url: Data<&String>
     ) -> Result<GetConfigResponse> {
-        let config = get_config(collaboration_id.0, db_url.0);
-        let config = match config {
-            Ok(c) => c,
-            Err(e) => return Ok(GetConfigResponse::InternalServerError(PlainText(e.to_string()))),
-        };
+        let config = get_config(collaboration_id.0, db_url.0)?;
         Ok(GetConfigResponse::Ok(Json(config)))
     }
 }
@@ -156,29 +161,13 @@ pub enum RegisterCollaborationResponse {
     /// Already added as participating party.
     #[oai(status = 208)]
     AlreadyAdded(Json<RegisterCollaborationResponseBody>),
-
-    /// Did not find a project with this ID.
-    #[oai(status = 404)]
-    NotFound,
-
-    /// Internal Server Error
-    #[oai(status = 500)]
-    InternalServerError(PlainText<String>)
 }
 
 /// Post new collaboration
 pub async fn post(collab: RegisterCollaborationPayload, db_url: &str) -> Result<RegisterCollaborationResponse> {
-    let csconfig_str = collab.cs_config.into_string().await;
+    let csconfig_str = collab.cs_config.into_string().await?;
 
-    let csconfig_str = match csconfig_str {
-        Ok(c) => c,
-        Err(_) => return Ok(RegisterCollaborationResponse::InternalServerError(PlainText("Computation service config not provided".to_string())))
-    };
-    let csconfig = CarbynestackConfig::from_json(&csconfig_str);
-    let csconfig = match csconfig {
-        Ok(c) => c,
-        Err(e) => return Ok(RegisterCollaborationResponse::InternalServerError(PlainText(format!("Unable to decode computation-service config\n{}\n\n{}", e.to_string() , csconfig_str))))
-    };
+    let csconfig = CarbynestackConfig::from_json(&csconfig_str)?;
 
     let mpc_program = collab.mpc_program.into_string().await?;
     let db_config = config::add_config(csconfig, db_url)?;
@@ -200,17 +189,11 @@ pub enum DeleteCollaborationResponse {
     /// Successfully removed from participating parties.
     #[oai(status = 200)]
     Removed,
-
-    /// Did not find a project with this ID.
-    #[oai(status = 404)]
-    NotFound,
 }
 
 pub fn delete(collab_id: i32, db_url: &str) -> Result<DeleteCollaborationResponse> {
-    match collab_ops::delete(collab_id, db_url) {
-        Ok(_) => Ok(DeleteCollaborationResponse::Removed),
-        Err(_) => Ok(DeleteCollaborationResponse::NotFound)
-    }
+    collab_ops::delete(collab_id, db_url)?;
+    Ok(DeleteCollaborationResponse::Removed)
 }
 
 #[derive(ApiResponse)]
@@ -227,20 +210,23 @@ pub fn list(db_url: &str) -> Result<ListCollaborationsResponse> {
     Ok(ListCollaborationsResponse::Ok(Json(resp)))
 }
 
+
+#[derive(ApiResponse)]
+pub enum GetCollaborationResponse {
+    #[oai(status = 200)]
+    Ok(Json<Collaboration>),
+} 
+pub fn get(collab_id: i32, db_url: &str) -> Result<GetCollaborationResponse> {
+    let resp = collab_ops::get(collab_id, db_url)?;
+    Ok(GetCollaborationResponse::Ok(Json(resp)))
+}
+
 /// Response for get result-ids
 #[derive(ApiResponse)]
 pub enum GetResultIdsResponse {
     /// Success, returns array of result ids
     #[oai(status = 200)]
     Ok(Json<Vec<String>>),
-
-    /// A collaboration with this id does not exist
-    #[oai(status = 404)]
-    CollaborationNotFound,
-
-    /// An internal server error occurred
-    #[oai(status = 500)]
-    InternalServerError(PlainText<String>)
 }
 
 /// Get result ids stored in the database.
@@ -256,14 +242,6 @@ pub enum GetConfigResponse {
     /// Returns the carbynestack config
     #[oai(status = 200)]
     Ok(Json<CarbynestackConfig>),
-
-    /// A collaboration with this id does not exist
-    #[oai(status = 404)]
-    CollaborationNotFound,
-
-    /// An internal server error occurred
-    #[oai(status = 500)]
-    InternalServerError(PlainText<String>)
 }
 
 #[cfg(test)]

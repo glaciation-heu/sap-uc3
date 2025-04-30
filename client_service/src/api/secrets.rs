@@ -19,13 +19,6 @@ pub enum UploadResponse {
         /// The ids of the created secret
         Json<Vec<String>>
     ),
-
-    /// Did not find a project with this ID.
-    #[oai(status = 404)]
-    NotFound,
-
-    #[oai(status = 406)]
-    NotAcceptable,
 }
 
 #[derive(ApiResponse)]
@@ -33,14 +26,6 @@ pub enum GetSecretResponse {
     /// Computation ID response
     #[oai(status = 200)]
     Secret(Json<ClearTextSecret>),
-
-    /// Did not find a project with this ID.
-    #[oai(status = 404)]
-    NotFound,
-
-    /// Secret ID not specified
-    #[oai(status = 406)]
-    SecretNotFound
 }
 
 /// Function to upload a secret.

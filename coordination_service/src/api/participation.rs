@@ -1,4 +1,4 @@
-use poem_openapi::{payload::{Json, PlainText}, ApiResponse, Object};
+use poem_openapi::{payload::Json , ApiResponse, Object};
 use serde::{Serialize, Deserialize};
 use tracing::{event, Level};
 use crate::{cs_definitions, db::{models::Participation, participation_ops, collab_ops}, error::Result};
@@ -19,14 +19,6 @@ pub enum RegisterParticipationResponse {
     /// Already added as participating party
     #[oai(status = 208)]
     AlreadyAdded(Json<RegisterParticipationResponseBody>),
-
-    /// collaboration not found
-    #[oai(status = 404)]
-    NotFound,
-
-    /// Internal Server Error
-    #[oai(status = 500)]
-    InternalServerError,
 }
 
 pub fn register_input_party(collaboration_id: i32, party_id: i32, db_url: &str) -> Result<RegisterParticipationResponse> {
@@ -41,31 +33,17 @@ pub enum DeleteParticipationResponse {
     /// Successfully removed from participating parties.
     #[oai(status = 200)]
     Removed,
-
-    /// Did not find a project with this ID.
-    #[oai(status = 404)]
-    NotFound,
-
-    /// Internal server error
-    #[oai(status = 500)]
-    InternalServerError(PlainText<String>)
 }
 
 pub fn delete(collaboration_id: i32, party_id: i32, db_url: &str) -> Result<DeleteParticipationResponse> {
-    match participation_ops::delete_participation(collaboration_id, party_id, db_url) {
-        Ok(_) => Ok(DeleteParticipationResponse::Removed),
-        Err(e) => Ok(DeleteParticipationResponse::InternalServerError(PlainText(e.to_string())))
-    }
+    participation_ops::delete_participation(collaboration_id, party_id, db_url)?;
+    Ok(DeleteParticipationResponse::Removed)
 }
 
 #[derive(ApiResponse)]
 pub enum ListParticipationsResponse {
     #[oai(status = 200)]
     OK(Json<Vec<Participation>>),
-
-    #[oai(status = 500)]
-    InternalServerError(PlainText<String>)
-
 }
 
 pub fn list(collaboration_id: i32, db_url: &str) -> Result<ListParticipationsResponse> {
@@ -78,14 +56,6 @@ pub enum RegisterOutputPartyResponse {
     /// Party was registered successfully
     #[oai(status = 200)]
     Ok,
-
-    /// A collaboration with this id does not exist
-    #[oai(status = 404)]
-    CollaborationNotFound,
-
-    /// An internal server error occurred
-    #[oai(status = 500)]
-    InternalServerError(PlainText<String>)
 }
 
 pub fn register_output_party(collaboration_id: i32, party_id: i32, party_client_endpoint: String, db_url: &str) -> Result<RegisterOutputPartyResponse> {
@@ -105,14 +75,6 @@ pub enum PostRegisterUploadResponse {
     /// The party already registered its output.
     #[oai(status = 208)]
     AlreadyRegistered,
-
-    /// Did not find a project with this ID.
-    #[oai(status = 404)]
-    NotFound,
-
-    /// Internal server error
-    #[oai(status = 500)]
-    InternalServerError(PlainText<String>)
 }
 
 pub fn register_upload(collaboration_id: i32, party_id: i32, secret_ids: Vec<String>, db_url: &str) -> Result<PostRegisterUploadResponse> {
