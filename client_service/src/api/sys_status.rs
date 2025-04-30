@@ -1,6 +1,6 @@
 use crate::error::Result;
 use poem_openapi::{
-    payload::{Json, PlainText},
+    payload::Json,
     ApiResponse, Object,
 };
 use sysinfo::System;
@@ -17,8 +17,6 @@ pub struct SysStatus {
 pub enum SysStatusResponse {
     #[oai(status = 200)]
     Ok(Json<SysStatus>),
-    #[oai(status = 500)]
-    InternalServerError(PlainText<String>),
 }
 
 pub fn sys_status() -> Result<SysStatusResponse> {

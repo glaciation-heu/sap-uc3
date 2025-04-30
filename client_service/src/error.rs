@@ -20,6 +20,9 @@ pub enum Error {
     #[error("Collaboration with id {collab_id} not found")]
     CollaborationNotFound{collab_id: i32},
 
+    #[error("Internal Server Error {message}")]
+    InternalServerError{message: String},
+
     // -- notify
 
     // -- result

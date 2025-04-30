@@ -23,6 +23,9 @@ pub enum Error {
     #[error("MPC execution failed: {0}")]
     MPCExecutionFailed(String),
 
+    #[error("Forbidden!")]
+    Forbidden,
+
     // -- CS-Client errors
     #[error("Collaboration with id {collab_id} not found")]
     CollaborationNotFound{collab_id: i32},
@@ -71,6 +74,7 @@ impl ResponseError for Error {
             Error::CollaborationNotFound { collab_id: _ } => StatusCode::NOT_FOUND,
             Error::Unprocessable{message: _} => StatusCode::UNPROCESSABLE_ENTITY,
             Error::ProcessingNotFinished => StatusCode::from_u16(409).unwrap(),
+            Error::Forbidden => StatusCode::FORBIDDEN,
             Error::DieselError(err) => {
                 event!(Level::INFO, "Diesel error: {:?}", err);
                 println!("Disel error: {:?}", err);
@@ -116,6 +120,12 @@ impl ApiResponse for Error {
                 MetaResponse {
                     description: "Unprocessable",
                     status: Some(422),
+                    content: vec![],
+                    headers: vec![]
+                },
+                MetaResponse {
+                    description: "Forbidden",
+                    status: Some(403),
                     content: vec![],
                     headers: vec![]
                 }

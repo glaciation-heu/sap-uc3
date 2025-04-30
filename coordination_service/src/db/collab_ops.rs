@@ -39,7 +39,11 @@ pub fn delete(collab_id: i32, db_url: &str) -> Result<usize> {
     let _ = diesel::delete(computation_results::dsl::computation_results.find(collab_id))
         .execute(&mut connection);
     let removed_cound = diesel::delete(collaborations.find(collab_id)).execute(&mut connection)?;
-    Ok(removed_cound)
+    if removed_cound < 1 {
+        Err(crate::error::Error::CollaborationNotFound { collab_id })
+    } else {
+        Ok(removed_cound)
+    }
 }
 
 pub fn result_ids(collab_id: i32, db_url: &str) -> Result<Vec<String>> {

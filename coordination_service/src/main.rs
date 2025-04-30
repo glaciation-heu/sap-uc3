@@ -73,13 +73,15 @@ async fn main() -> Result<()>{
 
     let api_service =
         OpenApiService::new((api::collaboration::CollabApi, api::sys_status::SysStatusApi), "Coordination Service", "1.0")
-            .description("Coordination Service to coordinate MPC execution")
+            .description("Coordination Service to coordinate MPC computations")
             .server(oas_server);
 
     let ui = api_service.swagger_ui();
+    let spec_endpoint = api_service.spec_endpoint_yaml();
     let app = Route::new()
         .nest(format!("{}/", &prefix), api_service)
         .nest(format!("{}/docs", &prefix), ui)
+        .nest(format!("{}/docs/spec", &prefix), spec_endpoint)
         .data(database_url)
         .with(Cors::new());
 

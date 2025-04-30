@@ -2,11 +2,15 @@ mod common;
 
 #[cfg(test)]
 mod test {
-    use std::io::Write;
+    use std::{io::Write, str::FromStr};
     use crate::common::{self, DBTestContext, create_correct_collaboration};
+    use claim::assert_some;
+    use coordination_service::db::models::Participation;
     use poem::test::{TestForm, TestFormField};
     use reqwest::StatusCode;
     use tempfile::NamedTempFile;
+    use tokio_test::assert_ok;
+    use uuid::Uuid;
 
     #[tokio::test]
     async fn create_collaboration_wrong_input() {
@@ -77,6 +81,29 @@ mod test {
     }
 
     #[tokio::test]
+    async fn delete_collaboration() {
+        let db = DBTestContext::new();
+        let client = common::test_client(&db.db_url);
+        let collab_resp = create_correct_collaboration(&client).await;
+        collab_resp.assert_status_is_ok();
+        let resp = collab_resp.json().await;
+        let id = resp.value().object().get("id").i64();
+        let resp = client.delete(format!("/collaboration/{}", id))
+            .send().await;
+        resp.assert_status_is_ok();
+    }
+
+    #[tokio::test]
+    async fn delete_collaboration_no_collab() {
+        let db = DBTestContext::new();
+        let client = common::test_client(&db.db_url);
+
+        let resp = client.delete(format!("/collaboration/{}", 255))
+            .send().await;
+        resp.assert_status(StatusCode::NOT_FOUND);
+    }
+
+    #[tokio::test]
     async fn register_input_party() {
         let db = DBTestContext::new();
         let client = common::test_client(&db.db_url);
@@ -121,5 +148,74 @@ mod test {
         let resp = client.post("/collaboration/2/register-output-party/1?party_client_endpoint=abc123")
             .send().await;
         resp.assert_status(StatusCode::NOT_FOUND);
+    }
+
+    #[tokio::test]
+    async fn register_secret_upload() {
+        // Setup
+        let db = DBTestContext::new();
+        let client = common::test_client(&db.db_url);
+        let collab_resp = create_correct_collaboration(&client).await;
+        collab_resp.assert_status_is_ok();
+        let resp = collab_resp.json().await;
+        let id = resp.value().object().get("id").i64();
+
+        // Register input party
+        let resp = client.post(format!("/collaboration/{}/register-input-party/1", id))
+            .send().await;
+        resp.assert_status_is_ok();
+
+        // Generate result UUID and register it
+        let res_uuid = Uuid::new_v4();
+        let res_resp = client.post(format!("/collaboration/{}/confirm-upload/1", id))
+            .body_json(&vec![res_uuid.to_string()])
+            .send().await;
+        res_resp.assert_status_is_ok();
+
+        // Check if correct UUID was registered
+        let get_participation = client.get(format!("/collaboration/{}/input-parties", id))
+            .send().await;
+        get_participation.assert_status_is_ok();
+        let body = get_participation.0.into_body().into_json::<Vec<Participation>>().await;
+        let body = assert_ok!(body);
+        assert_eq!(body.len(), 1, "The len of participations for the test collaboration is {} not 1", body.len());
+        let participation = &body[0];
+        if let Some(registered) = participation.secret_ids.clone() {
+            assert_eq!(registered.len(), 1, "The number of registered parties is not correct. Exptected 1, got {}", registered.len());
+            let uuid = assert_some!(registered[0].clone(), "Expected registered UUID to be Some(String).");
+            let uuid = assert_ok!(Uuid::from_str(&uuid), "Unable to parse UUID from registered.");
+            assert_eq!(uuid, res_uuid, "The result UUID is not equal to the registered one.");
+        } else {
+            assert!(false, "Party is not registered");
+        }
+    }
+    #[tokio::test]
+    async fn register_secret_upload_not_registered() {
+        let db = DBTestContext::new();
+        let client = common::test_client(&db.db_url);
+        let collab_resp = create_correct_collaboration(&client).await;
+        collab_resp.assert_status_is_ok();
+        let resp = collab_resp.json().await;
+        let id = resp.value().object().get("id").i64();
+
+        // Generate result UUID and register it
+        let res_uuid = Uuid::new_v4();
+        let res_resp = client.post(format!("/collaboration/{}/confirm-upload/1", id))
+            .body_json(&vec![res_uuid.to_string()])
+            .send().await;
+        res_resp.assert_status(StatusCode::NOT_FOUND);
+    }
+
+    #[tokio::test]
+    async fn register_secret_upload_no_collab() {
+        let db = DBTestContext::new();
+        let client = common::test_client(&db.db_url);
+
+        // Generate result UUID and register it
+        let res_uuid = Uuid::new_v4();
+        let res_resp = client.post(format!("/collaboration/{}/confirm-upload/1", 1))
+            .body_json(&vec![res_uuid.to_string()])
+            .send().await;
+        res_resp.assert_status(StatusCode::NOT_FOUND);
     }
 }

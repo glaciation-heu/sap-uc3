@@ -67,9 +67,11 @@ async fn main() {
             .server(oas_server);
 
     let ui = api_service.swagger_ui();
+    let spec_endpoint = api_service.spec_endpoint_yaml();
     let app = Route::new()
         .nest(format!("{}/", &prefix), api_service)
         .nest(format!("{}/docs", &prefix), ui)
+        .nest(format!("{}/docs/spec", &prefix), spec_endpoint)
         .with(Cors::new());
 
     let _ = Server::new(TcpListener::bind(format!("{}:{}", addr, port)))
