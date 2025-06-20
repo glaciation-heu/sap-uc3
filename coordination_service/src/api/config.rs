@@ -12,8 +12,11 @@ type BigNumber = String;
 #[oai(rename_all = "camelCase")]
 #[serde(rename_all = "camelCase")]
 pub struct CarbynestackConfig {
+    /// The Prime as used by the MPC backend
     pub prime: BigNumber,
+    /// The auxiliary modulus R as used by the MPC backend
     pub r: BigNumber,
+    /// The multiplicative inverse for the auxiliary modulus R as used by the MPC backend
     pub rinv: BigNumber,
     pub no_ssl_validation: bool,
     pub providers: Vec<CarbynestackProvider>

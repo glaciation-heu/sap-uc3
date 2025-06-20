@@ -218,4 +218,24 @@ mod test {
             .send().await;
         res_resp.assert_status(StatusCode::NOT_FOUND);
     }
+
+    #[tokio::test]
+    async fn get_config() {
+        let db = DBTestContext::new();
+        let client = common::test_client(&db.db_url);
+        let collab = create_correct_collaboration(&client).await;
+        collab.assert_status_is_ok();
+        let resp = collab.json().await;
+        let id = resp.value().object().get("id").i64();
+        let res_resp = client.get(format!("/collaboration/{}/compute_config", id)).send().await;
+        res_resp.assert_status_is_ok();
+    }
+
+    #[tokio::test]
+    async fn get_config_not_found() {
+        let db = DBTestContext::new();
+        let client = common::test_client(&db.db_url);
+        let res_resp = client.get(format!("/collaboration/{}/compute_config", 1)).send().await;
+        res_resp.assert_status(StatusCode::NOT_FOUND);
+    }
 }

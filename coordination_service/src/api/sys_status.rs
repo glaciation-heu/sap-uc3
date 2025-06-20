@@ -46,3 +46,20 @@ pub fn sys_status() -> Result<SysStatusResponse> {
     };
     Ok(SysStatusResponse::Ok(Json(status)))
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_sys_status() -> Result<()> {
+        let resp = sys_status()?;
+        if let SysStatusResponse::Ok(Json(res)) = resp {
+            assert_eq!(res.host_name, System::host_name());
+            assert_eq!(res.os_version, System::long_os_version());
+            assert_eq!(res.kernel_version, System::kernel_version());
+        } else {
+            assert!(false, "Sys status should return OK")
+        }
+        Ok(())
+    }
+}
