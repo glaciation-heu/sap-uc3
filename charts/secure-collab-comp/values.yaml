@@ -26,6 +26,7 @@ coordination-service:
     pullSecret: dockerconfigjson-github-com
 
 ingress:
+  enabled: false
   namespace: ingress-nginx
-  enabled: true
+  prefix: /uc3
   # host: localhost

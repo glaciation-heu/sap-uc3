@@ -8,21 +8,21 @@ spec:
   - http:
       paths:
       - pathType: Prefix
-        path: /client
+        path: {{ .Values.ingress.prefix }}/client
         backend:
           service:
             name: {{ .Release.Name }}-client-service
             port:
               number: 80
       - pathType: Prefix
-        path: /coord
+        path: {{ .Values.ingress.prefix }}/coord
         backend:
           service:
             name: {{ .Release.Name }}-coordination-service
             port:
               number: 80
       - pathType: Prefix
-        path: /csmock
+        path: {{ .Values.ingress.prefix }}/csmock
         backend:
           service:
             name: {{ .Release.Name }}-csmock
@@ -34,7 +34,7 @@ spec:
     http:
       paths:
       - pathType: Prefix
-        path: /csmock
+        path: {{ .Values.ingress.prefix }}/csmock
         backend:
           service:
             name: {{ .Release.Name }}-csmock
