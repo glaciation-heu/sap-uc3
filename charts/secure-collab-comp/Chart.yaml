@@ -1,19 +1,19 @@
 apiVersion: v2
 name: secure-collab-computation
-version: 0.1.2
+version: 0.1.3
 description: Combined helm chart for services of the secure collaborative computation service
 maintainers:
 - name: Nicolai Huening
   email: nicolai-huening@sap.com
 dependencies:
   - name: client-service
-    version: 0.1.2
+    version: 0.1.3
     repository: "file://../client_service"
     condition: client-service.enabled
   - name: coordination-service
-    version: 0.1.2
+    version: 0.1.3
     repository: "file://../coordination_service"
   - name: csmock
-    version: 0.1.2
+    version: 0.1.3
     repository: "file://../csmock"
     condition: csmock.enabled
