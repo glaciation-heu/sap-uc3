@@ -127,7 +127,7 @@ mod java_cs_client {
                         return Ok(String::from_utf8(output.stdout)
                             .map_err(|err| err.to_string())?);
                     } else {
-                        return Err(Error::from("Unable to execute command".to_string()));
+                        return Err(Error::from(format!("Unable to execute command {:?}", self.command)));
                     }
                 },
                 Err(err) => Err(Error::from(err)),
