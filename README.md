@@ -44,3 +44,5 @@ Install the combined helm chart using
 `helm install uc3 glaciation-uc3/secure-collab-computation`
 
 This will deploy a client service, the coordination service and a cs-mock instance for testing. If you would like to only deploy the client or coordination service use the `client_service` or `cordination_service` helm chart.
+
+For more information visit [https://glaciation-heu.github.io/sap-uc3/](https://glaciation-heu.github.io/sap-uc3/)
