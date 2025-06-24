@@ -1,6 +1,7 @@
 service:
   type: ClusterIP
   port: 80
+  clusterIP: "10.96.123.45"
 
 deployment:
   image: ghcr.io/glaciation-heu/sap-uc3/cs_mock:latest

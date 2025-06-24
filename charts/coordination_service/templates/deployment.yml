@@ -18,6 +18,10 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.deployment.pullSecret | quote }}
 {{- end }}
+{{- if .Values.csmock.configured }}
+      hostAliases:
+{{ toYaml .Values.csmock.hostAliases | nindent 8 }}
+{{- end }}
       containers:
         - name: coordination-service
           image: {{ .Values.deployment.image }}

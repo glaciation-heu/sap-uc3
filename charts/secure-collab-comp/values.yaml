@@ -10,6 +10,8 @@ client-service:
 
 csmock: 
   enabled: true
+  service:
+    clusterIP: "10.96.123.45"
   config:
     swagger_server_uri: "http://localhost/csmock"
     log_level: debug
@@ -24,6 +26,18 @@ coordination-service:
     service_prefix: /coord
   deployment:
     pullSecret: dockerconfigjson-github-com
+  # Hack because calculation calls for ephemeral-generic.
+  csmock:
+    configured: true
+    hostAliases:
+      - ip: "10.96.123.45"
+        hostnames:
+          - "uc3-csmock.default.svc.cluster.local"
+          - "ephemeral-generic.default.uc3-csmock.default.svc.cluster.local"
+
+smoketesting:
+  enabled: true
+  image: ghcr.io/glaciation-heu/sap-uc3/smoketesting:latest
 
 ingress:
   enabled: false

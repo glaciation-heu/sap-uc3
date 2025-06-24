@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: {{ include "service.fullname" . }}
 spec:
+  clusterIP: {{ .Values.service.clusterIP }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.deployment.port  | default 80 }}

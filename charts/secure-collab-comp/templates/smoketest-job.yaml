@@ -1,0 +1,39 @@
+{{- if .Values.smoketesting.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "smoketesting.service.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "smoketesting.service.name" . }}
+spec:
+  template:
+    metadata:
+      name: {{ include "smoketesting.service.name" . }}
+      labels:
+        app: {{ include "smoketesting.service.name" . }}
+    spec:
+      containers:
+      - name: {{ include "smoketesting.service.name" . }}
+      #image: 'ghcr.io/glaciation-heu/sap-uc3/smoketesting:0.1.3'
+        image: {{ .Values.smoketesting.image }}
+        env:
+        - name: COORD_SERVICE_URI
+          value: "http://{{ include "coord.service.domainname" . }}/coord"
+        - name: CLIENT_SERVICE_URI
+          value: "http://{{ include "client.service.domainname" . }}/client"
+        - name: SMOKETESTING_INSTANCE_URI
+          value: "http://{{ include "smoketesting.service.domainname" . }}"
+        volumeMounts:
+          - mountPath: /usr/src/smoketesting/csconfig
+            subPath: csconfig
+            name: config
+      restartPolicy: Never
+      dnsPolicy: ClusterFirst
+      volumes:
+        # You set volumes at the Pod level, then mount them into containers inside that Pod
+        - name: config
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: {{ include "smoketesting.service.name" . }}-config
+{{- end -}}

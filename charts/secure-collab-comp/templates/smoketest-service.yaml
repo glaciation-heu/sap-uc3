@@ -1,0 +1,16 @@
+{{- if .Values.smoketesting.enabled -}}
+# Headless service for smoketesting job
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "smoketesting.service.name" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  clusterIP: None
+  selector:
+    job-name: {{ include "smoketesting.service.name" . }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+{{- end -}}
