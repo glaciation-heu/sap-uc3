@@ -38,9 +38,9 @@ to build and run the services. After startup the services can be tested using th
 Using the helm chart is straightforward.
 
 First add the helm chart repository
-`helm repo add scc-charts https://...`
+`helm repo add glaciation-uc3 https://glaciation-heu.github.io/sap-uc3`
 
 Install the combined helm chart using
-`helm install secure-collab-service secure-collab-service`
+`helm install uc3 glaciation-uc3/secure-collab-computation`
 
 This will deploy a client service, the coordination service and a cs-mock instance for testing. If you would like to only deploy the client or coordination service use the `client_service` or `cordination_service` helm chart.
