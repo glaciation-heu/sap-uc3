@@ -9,10 +9,11 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 from threading import Thread
 from output_party_mock import EndpointAction, FlaskAppWrapper
 import urllib.parse
-from multiprocessing import Process, Manager, freeze_support
+from multiprocessing import Process, Manager, freeze_support, set_start_method
 from urllib.parse import urlparse
 
 
+set_start_method("fork")
 logger = logging.getLogger(__name__)
 coloredlogs.install()
 
@@ -21,6 +22,7 @@ logger.setLevel("INFO")
 coord_service_uri = os.getenv("COORD_SERVICE_URI")
 client_service_uri = os.getenv("CLIENT_SERVICE_URI")
 testinginstance_uri = os.getenv("SMOKETESTING_INSTANCE_URI")
+
 
 if __name__ == '__main__':
     freeze_support()
@@ -140,6 +142,7 @@ if __name__ == '__main__':
             if timesSlept > 5:
                 logger.error(f"Notification not received after {2*timesSlept} seconds.")
                 clean_upload_data()
+                thread.terminate()
                 exit(1)
             timesSlept = timesSlept + 1
         thread.terminate()
