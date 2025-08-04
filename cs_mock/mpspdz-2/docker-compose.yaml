@@ -23,8 +23,8 @@ services:
     #entrypoint: tail -f /dev/null
     restart: always
     environment:
-      # PROGRAM: secure-comparison
-      PROGRAM: personal_client_example
+      PROGRAM: secure-comparison
+      # PROGRAM: personal_client_example
       # PROGRAM: bankers_bonus
       PARTY: 0
       HOST: party0
@@ -43,8 +43,8 @@ services:
     #entrypoint: tail -f /dev/null
     restart: always
     environment:
-      # PROGRAM: secure-comparison
-      PROGRAM: personal_client_example
+      PROGRAM: secure-comparison
+      # PROGRAM: personal_client_example
       # PROGRAM: bankers_bonus
       PARTY: 1
       HOST: party0
