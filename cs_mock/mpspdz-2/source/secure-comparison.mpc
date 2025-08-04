@@ -1,0 +1,17 @@
+PORTNUM = 10000
+
+listen_for_clients(PORTNUM)
+socket_id = accept_client_connection(PORTNUM)
+v = sint.read_from_socket(socket_id, 2)
+
+val1 = v[0]
+val2 = v[1]
+
+# The logic
+result = val1 < val2 
+
+# Output encrypted result
+resp = Array(1, sint)
+resp[0] = sint(22)
+sint.reveal_to_clients([socket_id], resp)
+closeclientconnection(socket_id)
