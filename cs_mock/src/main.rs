@@ -1,9 +1,11 @@
+use api::logmiddleware::LogRequest;
 use poem::{listener::TcpListener, Route, Server, EndpointExt, middleware::Cors};
 use poem_openapi::OpenApiService;
 use tracing::{event, Level};
 use std::env;
 
 mod api;
+mod computation;
 
 #[tokio::main]
 async fn main() {
@@ -42,6 +44,7 @@ async fn main() {
     let app = Route::new()
         .nest(format!("{}/", &prefix), api_service)
         .nest(format!("{}/docs", &prefix), ui)
+        .with(LogRequest)
         .with(Cors::new());
 
     let _ = Server::new(TcpListener::bind(format!("{}:{}", addr, port)))

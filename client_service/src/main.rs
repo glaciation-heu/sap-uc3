@@ -1,9 +1,5 @@
 mod api;
-mod cs_definitions;
-mod cs_config;
-mod netaccess;
 mod error;
-mod cs_client;
 
 use poem::{listener::TcpListener, Route, Server, EndpointExt, middleware::Cors};
 use poem_openapi::OpenApiService;
@@ -53,6 +49,10 @@ async fn main() {
         Ok(prefix) => prefix,
         Err(_) => "".to_string()
     };
+    let coord_uri = match env::var("COORDINATOR_URI") {
+        Ok(uri) => uri,
+        Err(e) => panic!("Unable to get COORDINATOR_URI environment variable")
+    };
 
     event!(Level::INFO, "Starting client service on {}:{}", addr, port);
 
@@ -72,6 +72,7 @@ async fn main() {
         .nest(format!("{}/", &prefix), api_service)
         .nest(format!("{}/docs", &prefix), ui)
         .nest(format!("{}/docs/spec", &prefix), spec_endpoint)
+        .data(coord_uri)
         .with(Cors::new());
 
     let _ = Server::new(TcpListener::bind(format!("{}:{}", addr, port)))

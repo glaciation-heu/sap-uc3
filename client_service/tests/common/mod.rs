@@ -1,7 +1,7 @@
 #[cfg(test)]
 use std::env;
 
-use poem::{test::{TestClient, TestForm, TestFormField, TestResponse}, Route};
+use poem::{test::{TestClient, TestForm, TestFormField, TestResponse}, EndpointExt, Route};
 use poem_openapi::OpenApiService;
 use reqwest::{multipart::{Form, Part}, Client};
 use serde::Deserialize;
@@ -9,8 +9,15 @@ use tempfile::NamedTempFile;
 
 use std::io::Write;
 
+fn coord_uri() -> String {
+    match env::var("COORDINATOR_URI") {
+        Ok(uri) => uri,
+        Err(_) => "http://localhost:8081".to_string()
+    }
+}
+
 pub fn test_client() -> TestClient<Route> {
-    let api_service = OpenApiService::new(client_service::api::Api, "", "1.0");
+    let api_service = OpenApiService::new(client_service::api::Api, "", "1.0").data(coord_uri());
     let app = Route::new().nest("/", api_service);
     TestClient::new(app)
 }
@@ -40,12 +47,11 @@ pub async fn setup_env() -> Collaboration {
     // get existing collaborations for the test environment
     let client = Client::new();   
     //env::set_var("COORDINATOR_URI", "http://localhost:8082");
-    let coord_uri = env::var("COORDINATOR_URI").unwrap();
-    let collabs = client.get(format!("{}/collaboration", coord_uri)).send().await.unwrap();
+    let collabs = client.get(format!("{}/collaboration", coord_uri())).send().await.unwrap();
     let collabs = collabs.json::<Vec<Collaboration>>().await.unwrap();
     // remove previous collaborations
     for c in collabs {
-        let _ = client.delete(format!("{}/collaboration/{}", coord_uri, c.id)).send().await;
+        let _ = client.delete(format!("{}/collaboration/{}", coord_uri(), c.id)).send().await;
     }
      let config = Part::bytes(br#"
  {
@@ -115,7 +121,7 @@ sint.write_to_socket(socket_id, resp)
         .text("number_of_parties", "1")
         .part("mpc_program", program)
         .part("cs_config", config);
-    let collab = client.post(format!("{}/collaboration", coord_uri))
+    let collab = client.post(format!("{}/collaboration", coord_uri()))
     .multipart(form)
     .send().await.unwrap();
     collab.json::<Collaboration>().await.unwrap()
@@ -123,9 +129,8 @@ sint.write_to_socket(socket_id, resp)
 
 pub async fn register_input_party(collab_id: i32, party_id: i32) {
     let client = Client::new();   
-    let coord_uri = env::var("COORDINATOR_URI").unwrap();
     let _ = client
-        .post(format!("{}/collaboration/{}/register-input-party/{}", coord_uri, collab_id, party_id))
+        .post(format!("{}/collaboration/{}/register-input-party/{}", coord_uri(), collab_id, party_id))
         .send().await.unwrap();
 }
 

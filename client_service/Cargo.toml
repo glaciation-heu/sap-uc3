@@ -22,6 +22,7 @@ mockall = "0.13.1"
 derive_more = {version = "1.0.0", features = ["from"]}
 lazy_static = "1.5.0"
 thiserror = "2.0.11"
+cs_interface = { path = "../cs_interface" }
 
 [dev-dependencies]
 tempdir = "0.3.7"

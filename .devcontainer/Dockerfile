@@ -1,5 +1,5 @@
 # Debug image for developmend
-FROM rust:1.83.0
+FROM rust:1.88.0
 
 RUN apt update
 RUN apt install curl git -y

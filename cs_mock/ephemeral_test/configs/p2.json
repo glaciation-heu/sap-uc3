@@ -1,0 +1,32 @@
+{
+    "retrySleep": "50ms",
+    "networkEstablishTimeout": "1m",
+    "prime": "198766463529478683931867765928436695041",
+    "rInv": "141515903391459779531506841503331516415",
+    "gfpMacKey": "1113507028231509545156335486838233835",
+    "gf2nMacKey": "0x4ec9a0343c",
+    "gf2nBitLength": 40,
+    "gf2nStorageSize": 8,
+    "prepFolder": "Player-Data",
+    "amphoraConfig": {
+        "host": "csmock",
+        "scheme": "http",
+        "path": "/2/amphora/"
+    },
+    "castorConfig": {
+        "host": "csmock",
+        "scheme": "http",
+        "path": "/2/castor/",
+        "tupleStock": 1000
+    },
+    "frontendURL": "csmock",
+    "discoveryConfig": {
+        "host": "csmock",
+        "port": "80",
+        "connectTimeout": "60s"
+    },
+    "playerID": 1,
+    "playerCount": 2,
+    "stateTimeout": "60s",
+    "computationTimeout": "600s"
+}

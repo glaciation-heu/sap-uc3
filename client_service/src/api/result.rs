@@ -1,8 +1,7 @@
+use cs_interface::{ClearTextSecret, CsClient, NetAccess};
 use poem_openapi::{payload::Json, types::ParseFromJSON, ApiResponse};
-use crate::{cs_client::{ClearTextSecret, CsClient}, error::{Error, Result}, netaccess::NetAccess};
+use crate::{error::{Error, Result}};
 use tracing::{event, Level};
-
-use super::utils::coordinator_uri;
 
 #[derive(ApiResponse, Debug)]
 pub enum ResultResponse {
@@ -11,18 +10,18 @@ pub enum ResultResponse {
     ComputationResult(Json<Vec<ClearTextSecret>>),
 }
 
-pub async fn result(collab_id: i32, _party_id: i32, cs_client: &impl CsClient, net: &impl NetAccess) -> Result<ResultResponse> {
-    let result_ids = get_result_ids(collab_id, net).await?;
+pub async fn result(coord_uri: &str, collab_id: i32, _party_id: i32, cs_client: &impl CsClient, net: &impl NetAccess) -> Result<ResultResponse> {
+    let result_ids = get_result_ids(coord_uri, collab_id, net).await?;
     let mut secrets: Vec<ClearTextSecret> = vec![];
     for id in result_ids {
-        let res = cs_client.get_secret(&id).await?;
+        let res = cs_client.get_secret(&id)?;
         secrets.push(res);
     }
     Ok(ResultResponse::ComputationResult(Json(secrets)))
 }
 
-async fn get_result_ids(collab_id: i32, net: &impl NetAccess) -> Result<Vec<String>> {
-    let url = format!("{}/collaboration/{}/result_ids", coordinator_uri(), collab_id);
+async fn get_result_ids(coord_uri: &str, collab_id: i32, net: &impl NetAccess) -> Result<Vec<String>> {
+    let url = format!("{}/collaboration/{}/result_ids", coord_uri, collab_id);
     let res = net.get(&url).await?;
     let s = String::from_utf8_lossy(&res);
     event!(Level::DEBUG, "Try parsing json {}", &s);
@@ -41,7 +40,7 @@ mod test {
 
     use tokio_test::assert_err;
 
-    use crate::{cs_client::MockCsClient, netaccess::MockNetAccess};
+    use cs_interface::{MockCsClient, MockNetAccess};
 
     use super::*;
 
@@ -53,8 +52,7 @@ mod test {
             .returning(|_| {
                 Ok("[\"asdfa\"]".as_bytes().to_vec())
             }).withf(|url| url == "http://coordinator/collaboration/1/result_ids");
-        env::set_var("COORDINATOR_URI", "http://coordinator");
-        let res = get_result_ids(1, &net).await;
+        let res = get_result_ids("http://coordinator", 1, &net).await;
         net.checkpoint();
         match res {
             Ok(res) => assert_eq!(res, vec!["asdfa"]),
@@ -68,10 +66,9 @@ mod test {
         net.expect_get()
             .times(1)
             .returning(|_| {
-                Err(Error::from("Unable to get collaboration with id"))
+                Err(cs_interface::Error::HttpError{ code: 404, message: "Unable to get collaboration with id".to_string()})
             }).withf(|url| url == "http://coordinator/collaboration/1/result_ids");
-        env::set_var("COORDINATOR_URI", "http://coordinator");
-        let res = get_result_ids(1, &net).await;
+        let res = get_result_ids( "http://coordinator", 1, &net).await;
         net.checkpoint();
         match res {
             Ok(_) => assert!(false, "This test should return en error"),
@@ -87,7 +84,6 @@ mod test {
             .returning(|_| {
                 Ok("[\"asdf\"]".as_bytes().to_vec())
             }).withf(|url| url == "http://coordinator/collaboration/1/result_ids");
-        env::set_var("COORDINATOR_URI", "http://coordinator");
         let mut client = MockCsClient::new();
         client.expect_get_secret()
             .times(1)
@@ -98,7 +94,7 @@ mod test {
                     // game_id: None,
                 })
             });
-        let ResultResponse::ComputationResult(res) = result(1, 1, &client, &net).await?;
+        let ResultResponse::ComputationResult(res) = result("http://coordinator",1, 1, &client, &net).await?;
         net.checkpoint();
         client.checkpoint();
         assert_eq!(res.0.len(), 1);
@@ -115,8 +111,7 @@ mod test {
             .returning(|_| {
                 Ok("\"asdfa\"]".as_bytes().to_vec())
             }).withf(|url| url == "http://coordinator/collaboration/1/result_ids");
-        env::set_var("COORDINATOR_URI", "http://coordinator");
-        let res = get_result_ids(1, &net).await;
+        let res = get_result_ids("http://coordinator", 1, &net).await;
         net.checkpoint();
         match res {
             Ok(_) => assert!(false, "This test should not return OK, because of invalid json"),
@@ -131,13 +126,12 @@ mod test {
         net.expect_get()
             .times(1)
             .returning(|_| {
-                Err(Error::from(""))
+                Err(cs_interface::Error::HttpError{ code: 404, message: "".to_string()})
             }).withf(|url| url == "http://coordinator/collaboration/1/result_ids");
-        env::set_var("COORDINATOR_URI", "http://coordinator");
         let mut client = MockCsClient::new();
         client.expect_get_secret()
             .times(0);
-        let res = result(1, 1, &client, &net).await;
+        let res = result("http://coordinator",1, 1, &client, &net).await;
         assert_err!(res);
         net.checkpoint();
         client.checkpoint();

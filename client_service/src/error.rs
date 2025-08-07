@@ -10,6 +10,7 @@ pub enum Error {
     #[error("custom error {0}")]
     Custom(String),
 
+
     #[error("{message}")]
     Unprocessable{message: String},
 
@@ -23,12 +24,6 @@ pub enum Error {
     #[error("Internal Server Error {message}")]
     InternalServerError{message: String},
 
-    // -- notify
-
-    // -- result
-
-    // -- secrets
-
     // -- Externals
     #[error("io error {0}")]
     Io(#[from] std::io::Error), // as example
@@ -37,7 +32,13 @@ pub enum Error {
     SerdeJson(#[from] serde_json::Error),
 
     #[error("net error {0}")]
-    ReqwestError(#[from] reqwest::Error)
+    ReqwestError(#[from] reqwest::Error),
+
+    #[error("Environment variable error {0}")]
+    EnvVarError(#[from] std::env::VarError),
+
+    #[error("parse from utf8 error {0}")]
+    StdError(#[from] std::string::FromUtf8Error),
 
 }
 
@@ -53,6 +54,22 @@ impl From<String> for Error {
     }
 }
 
+
+impl From<cs_interface::Error> for Error {
+    fn from(value: cs_interface::Error) -> Self {
+        match value {
+            cs_interface::Error::EnvVarError(e) => Self::EnvVarError(e),
+            cs_interface::Error::CommandError(e) => Self::Unprocessable { message: e },
+            cs_interface::Error::Io(error) => Self::Io(error),
+            cs_interface::Error::SerdeJson(error) => Self::SerdeJson(error),
+            cs_interface::Error::ReqwestError(error) => Self::ReqwestError(error),
+            cs_interface::Error::HttpError { code, message } => Self::HttpError{ code, message},
+            cs_interface::Error::StdError(e) => Self::StdError(e),
+            cs_interface::Error::B64DecodeError(decode_error) => Self::Custom(format!("Decode error: {}", decode_error.to_string())),
+        }
+    }
+}
+
 /// Response error implementation for
 impl ResponseError for Error {
     fn status(&self) -> StatusCode {
@@ -65,7 +82,7 @@ impl ResponseError for Error {
                     Some(status) => status,
                     None => StatusCode::INTERNAL_SERVER_ERROR
                 }
-            },
+            }
             _ => StatusCode::INTERNAL_SERVER_ERROR
         }
     }

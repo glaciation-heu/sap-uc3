@@ -24,7 +24,7 @@
 	// "forwardPorts": [],
 
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
-	"runServices": ["test_database", "test_coordination_service", "test_client_service", "csmock"],
+	"runServices": ["test_database", "test_coordination_service", "test_client_service", "csmock", "party0", "party1"],
 
 	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
 	// "shutdownAction": "none",

@@ -1,6 +1,7 @@
+use cs_interface::{ClearTextSecret, CsClient, NetAccess};
 use poem_openapi::{payload::{Json, PlainText}, types::{ToJSON, multipart::Upload}, ApiResponse, Multipart};
 use tracing::{event, Level};
-use crate::{cs_client::{ClearTextSecret, CsClient}, error::{Error, Result}, netaccess::NetAccess};
+use crate::{error::{Error, Result}};
 
 use super::utils;
 
@@ -38,7 +39,7 @@ pub async fn upload(collab_id: i32, party_id: i32, secrets: UploadPayload, cs_cl
     };
     let mut secret_arr = secret_arr.split("\n").into_iter().collect::<Vec<&str>>();
     secret_arr.remove(0); // remove header
-    let secret_ids = cs_client.create_secrets(secret_arr, secrets.uuid).await?;
+    let secret_ids = cs_client.create_secrets(secret_arr, secrets.uuid)?;
     event!(Level::INFO, "Secrets were successfully created on the computation services." );
     register_upload(&secret_ids, collab_id, party_id, net).await?;
     Ok(UploadResponse::OK(Json(secret_ids)))
@@ -53,7 +54,7 @@ async fn register_upload(secrets: &Vec<String>, collab_id: i32, party_id: i32, n
 }
 
 pub async fn get(secret_id: String, cs_client: &impl CsClient) -> Result<GetSecretResponse> {
-    let secret = cs_client.get_secret(&secret_id).await?;
+    let secret = cs_client.get_secret(&secret_id)?;
     Ok(GetSecretResponse::Secret(Json(secret)))
 }
 
@@ -66,7 +67,7 @@ pub enum DelSecretResp {
 }
 
 pub async fn delete(secret_ids: Vec<String>, cs_client: &impl CsClient) -> Result<DelSecretResp> {
-    let output = cs_client.delete_secrets(secret_ids).await?;
+    let output = cs_client.delete_secrets(secret_ids)?;
     Ok(DelSecretResp::OK(PlainText(output)))
 }
 
@@ -78,7 +79,7 @@ pub enum ListSecretsResponse {
 }
 
 pub async fn list_secrets(cs_client: &impl CsClient) -> Result<ListSecretsResponse> {
-    let secrets = cs_client.list_secrets().await?;
+    let secrets = cs_client.list_secrets()?;
     Ok(ListSecretsResponse::Secrets(Json(secrets)))
 }
 

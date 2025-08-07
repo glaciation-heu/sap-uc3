@@ -1,0 +1,67 @@
+services:
+  client:
+    image: mpspdz:latest  # Replace with your Docker image name
+    platform: linux/amd64
+    # command: ["python", "ExternalIO/client-interface.py", "0", "100", "0", "&", "python", "ExternalIO/client-interface.py", "1", "200", "0", "&", "python", "ExternalIO/client-interface.py", "2", "50", "1"]
+    entrypoint: tail -f /dev/null
+    #entrypoint: python ExternalIO/client-interface.py 0 100 0 & python ExternalIO/client-interface.py 1 200 0 & python ExternalIO/client-interface.py 2 50 1
+    # entrypoint: python ExternalIO/client-interface.py 0 100 200 300 400 500
+    networks:
+      - mpc-network
+    volumes:
+      - ./send_data.py:/root/MP-SPDZ/send_data.py
+      - ./client-interface.py:/root/MP-SPDZ/ExternalIO/client-interface.py
+      - player-data:/root/MP-SPDZ/Player-Data:rw
+      - program:/root/MP-SPDZ/Programs/Source:rw
+    depends_on:
+      - party0
+      - party1
+
+  party0:
+    container_name: party0
+    image: mpspdz:latest  # Replace with your Docker image name
+    platform: linux/amd64
+    #entrypoint: tail -f /dev/null
+    restart: always
+    environment:
+      PROGRAM: secure-comparison
+      # PROGRAM: personal_client_example
+      # PROGRAM: bankers_bonus
+      PARTY: 0
+      HOST: party0
+    ports:
+      - "10000:10000"  # Expose Player 0's port for the client
+    networks:
+      - mpc-network
+    volumes:
+      - player-data:/root/MP-SPDZ/Player-Data:rw
+      - program:/root/MP-SPDZ/Programs/Source:rw
+
+  party1:
+    container_name: party1
+    image: mpspdz:latest  # Same image
+    platform: linux/amd64
+    #command: ./compile.py tutorial && ./mascot-party.x 1 tutorial -pn 11000 -N 2 -h party0  # Player 0
+    #entrypoint: tail -f /dev/null
+    restart: always
+    environment:
+      PROGRAM: secure-comparison
+      # PROGRAM: personal_client_example
+      # PROGRAM: bankers_bonus
+      PARTY: 1
+      HOST: party0
+    ports:
+      - "10001:10001"  # Expose Player 0's port for the client
+    networks:
+      - mpc-network
+    volumes:
+      - player-data:/root/MP-SPDZ/Player-Data:rw
+      - program:/root/MP-SPDZ/Programs/Source:rw
+
+
+networks:
+  mpc-network:
+
+volumes:
+  player-data:
+  program:

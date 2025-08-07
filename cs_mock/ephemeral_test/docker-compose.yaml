@@ -1,0 +1,42 @@
+services:
+  csmock:
+    container_name: csmock
+    image: cs_mock:latest
+    environment:
+      COMPUTATION_RESULT: "[120,324,5235]"
+      SWAGGER_SERVER_URI: "${PUBLIC_SERVICE_URI}:${CLIENT_SERVICE_PORT:-8085}"
+    ports:
+      - "8085:80"
+    networks:
+      default:
+        aliases:
+          - ephemeral-generic.default.csmock
+
+  party1:
+    container_name: party1
+    image: ephemeral:latest
+    platform: linux/amd64
+    volumes:
+      - ./configs/p1.json:/etc/config/config.json
+    expose: 
+      - "8080"
+    ports:
+      - "8090:8080"
+    networks:
+      default:
+
+  party2:
+    container_name: party2
+    image: ephemeral:latest
+    platform: linux/amd64
+    volumes:
+      - ./configs/p2.json:/etc/config/config.json
+    expose: 
+      - "8080"
+    ports:
+      - "8091:8080"
+    networks:
+      default:
+
+networks:
+  default:

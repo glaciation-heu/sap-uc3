@@ -1,11 +1,10 @@
+use cs_interface::CsClient;
 use poem_openapi::{payload::Json, ApiResponse, Object};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use tracing::{event, Level};
 use uuid::Uuid;
-use crate::{error::{Error, Result}, netaccess::RequestsClient};
-
-use crate::cs_config::get_config;
+use crate::error::{Error, Result};
 
 #[derive(Serialize, Deserialize, Object)]
 #[oai(rename_all = "camelCase")]
@@ -42,18 +41,18 @@ pub enum GetSecretShareResponse {
     OK(Json<GetSecretSharesResult>),
 }
 
-pub async fn get_secret_share(secret_id: String, collab_id: i32) -> Result<GetSecretShareResponse> {
-    let config = get_config(collab_id, &RequestsClient::new()).await?;
+pub async fn get_secret_share(secret_id: String, cs_client: &impl CsClient) -> Result<GetSecretShareResponse> {
+    //let config = get_config(collab_id, &RequestsClient::new()).await?;
 
-    let comp_parties = vec![&config.providers[0].base_url, &config.providers[1].base_url];
+    let comp_parties = cs_client.get_comp_party_urls();
     let req_uuid = Uuid::new_v4();
     let _resp = Client::new()
         .get(format!("{}/amphora/secret-shares/{}?requestId={}", comp_parties[0], secret_id, req_uuid))
         .header("accepts", "application/json")
         .send().await;
-    let mut resp_arr: Vec<Option<SecretShare>> = vec![None, None];
-    for x in (0..2).rev() {
-        let comp_party = comp_parties[x];
+    let mut resp_arr: Vec<Option<SecretShare>> = comp_parties.iter().map(|_| None).collect();
+    for (i, comp_party) in comp_parties.iter().enumerate().rev() {
+        //let comp_party = comp_parties[x];
         let resp_p = Client::new()
             .get(format!("{}/amphora/secret-shares/{}?requestId={}", comp_party, secret_id, req_uuid))
             .header("accepts", "application/json")
@@ -66,7 +65,7 @@ pub async fn get_secret_share(secret_id: String, collab_id: i32) -> Result<GetSe
                 if status.is_success() {
                     event!(Level::INFO, "{}",s);
                     let data: SecretShare = serde_json::from_str(s.to_string().as_str())?;
-                    resp_arr[x] = Some(data);
+                    resp_arr[i] = Some(data);
                 } else {
                     event!(Level::ERROR, "Err: {}", s);
                     return Err(Error::InternalServerError { message: s.to_string() })

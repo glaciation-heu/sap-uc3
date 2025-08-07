@@ -1,4 +1,4 @@
-FROM rust:1.83.0-bullseye AS builder
+FROM rust:1.88.0-bullseye AS builder
 
 # Install dependecies first for caching.
 WORKDIR /usr/src/cs-mock
@@ -13,26 +13,68 @@ RUN cargo build --release
 ADD . .
 RUN cargo build --release
 
-FROM python:3.9.16-bullseye
+#FROM python:3.9.16-bullseye
+
+FROM python:3.9.16-bullseye as mpspdz
 WORKDIR /root
 RUN apt-get update && apt-get install -y \
   curl \
   openssl \
-  xz-utils
+  xz-utils \
+  build-essential \
+  clang \
+  cmake  \
+  automake \
+  git \
+  libboost-dev \
+  libboost-filesystem-dev \
+  libboost-iostreams-dev \
+  libboost-thread-dev \
+  libgmp-dev \
+  libntl-dev \
+  libsodium-dev \
+  libssl-dev \
+  libtool \
+  netcat
 
-ADD scripts .
+ADD mpspdz/scripts .
 
 # ADD api-srv api-srv
 RUN ["bash", "setup.bash"]
 
+RUN git clone https://github.com/DLTcollab/sse2neon.git /root/MP-SPDZ/deps/sse2neon
+WORKDIR /root/MP-SPDZ/deps/sse2neon
+RUN git checkout 29716df957401e9c357348e9b73c95a38cdcd34f
+WORKDIR /root
+
 EXPOSE 8011
+# RUN rm -r ./MP-SPDZ/Programs/Source/*
 
-# ADD source/* ./MP-SPDZ/Programs/Source/
+ADD mpspdz/source/* ./MP-SPDZ/Programs/Source/
+ADD mpspdz/client-interface.py ./MP-SPDZ/ExternalIO/client-interface.py 
 
-# RUN ["bash", "compile.bash"]
+WORKDIR /root/MP-SPDZ
+
+# RUN make -j online
+
+#RUN Scripts/setup-ssl.sh 2
+#RUN Scripts/setup-clients.sh 3
+RUN pip install gmpy2
+# 
+# RUN make bankers-bonus-client.x
+
+ADD mpspdz/execute.sh .
+CMD [ "./execute.sh" ]
+
+FROM mpspdz
+
+RUN apt install gettext-base openjdk-17-jre openssl libssl-dev libpq-dev --yes
+
+ENV CLI_VERSION=0.4.1
+RUN curl -o /usr/local/cs.jar -L https://github.com/carbynestack/cli/releases/download/cli-v$CLI_VERSION/cli-$CLI_VERSION.jar
+
+WORKDIR /root/MP-SPDZ
 
 COPY --from=builder /usr/src/cs-mock/target/release/cs-mock /bin/cs-mock
-
-# CMD ["npm", "--prefix", "api-srv", "run", "start"]
 
 CMD ["cs-mock"]

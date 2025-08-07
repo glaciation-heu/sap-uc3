@@ -5,6 +5,8 @@ use poem::Result;
 use poem_openapi::{param::{Path, Query}, payload::Json, ApiResponse, Object, OpenApi};
 use tracing::{event, Level};
 
+use crate::computation::run_computation;
+
 const RESULT_UUID:&str = "00000000-0000-0000-0000-000000000000";
 pub struct EphemeralApi;
 #[OpenApi(prefix_path="/")]
@@ -19,6 +21,9 @@ impl EphemeralApi {
         let resp_obj = ComputationResponse {
             response: vec![RESULT_UUID.to_string()]
         };
+        if vcp_id.0 == 0 {
+            run_computation(data.code.clone(), 2);
+        }
         // sleep 2 seconds
         thread::sleep(time::Duration::from_secs(2));
         Ok(ExecuteResp::OK(Json(resp_obj)))

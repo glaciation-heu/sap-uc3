@@ -20,7 +20,7 @@ mod test {
 
         // Upload secret to start execution
         let upload_resp = common::upload_secret(&client, collab.id, 1, None).await;
-
+        
         upload_resp.assert_status_is_ok();
 
         // get result
@@ -35,6 +35,8 @@ mod test {
             if resp.0.status() == StatusCode::CONFLICT {
                 continue;
             }
+            //let body = resp.0.into_body().into_string().await;
+            //assert!(false, "response: {:?}", body);
             resp.assert_status_is_ok();
             break;
         }
@@ -48,7 +50,5 @@ mod test {
             .send()
             .await;
         resp.assert_status(StatusCode::NOT_FOUND);
-        let body = resp.0.into_body().into_string().await;
-        assert!(true, "response: {:?}", body);
     }
 }

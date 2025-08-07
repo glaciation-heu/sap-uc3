@@ -31,7 +31,8 @@ services:
   test_client_service:
     container_name: test_client_service
     build: 
-      context: ../client_service
+      context: ../
+      dockerfile: Dockerfile.client_service
     restart: on-failure
     ports:
       - "9080:80"
@@ -43,6 +44,8 @@ services:
       - default
 
   csmock:
+    container_name: csmock
+    platform: linux/amd64
     build: 
       context: ../cs_mock
     environment:
@@ -53,6 +56,38 @@ services:
       default:
         aliases:
           - ephemeral-generic.default.csmock
+          - csmock
+  party0:
+    container_name: party0
+    platform: linux/amd64
+    build: 
+      context: ../cs_mock
+    command: ./execute.sh
+    environment:
+      PROGRAM: program
+      PARTY: 0
+      HOST: party0
+    networks:
+      default:
+    volumes:
+      - player-data:/root/MP-SPDZ/Player-Data:rw
+      - program:/root/MP-SPDZ/Programs/Source:rw
+
+  party1:
+    container_name: party1
+    platform: linux/amd64
+    build: 
+      context: ../cs_mock
+    command: ./execute.sh
+    environment:
+      PROGRAM: program
+      PARTY: 1
+      HOST: party0
+    networks:
+      default:
+    volumes:
+      - player-data:/root/MP-SPDZ/Player-Data:rw
+      - program:/root/MP-SPDZ/Programs/Source:rw
 
   test_env:
     build:
@@ -79,3 +114,7 @@ services:
 
 networks:
   default:
+
+volumes:
+  player-data:
+  program:
