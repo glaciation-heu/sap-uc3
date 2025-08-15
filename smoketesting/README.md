@@ -1,9 +1,9 @@
 # SmokeTesting
 
-A simple smoketesting skript which triggers a simple computation.
+A simple smoketesting skript which triggers a computation.
 
 The computation is defined in `mpc_program.mpc` and the CarbyneStack configuration in `csconfig`. 
-This smoke test works with both a real and mocked computation service (e.g. CarbyneStack)
+This smoke test works with both a mocked and real computation service (e.g. CarbyneStack)
 
 ### Environment Variables
 | Variabel                    | Description                                                                        |
