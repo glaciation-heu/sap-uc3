@@ -37,7 +37,7 @@ pub async fn upload(collab_id: i32, party_id: i32, secrets: UploadPayload, cs_cl
             return Err(Error::from(err.to_string()));
         }
     };
-    let mut secret_arr = secret_arr.split("\n").into_iter().collect::<Vec<&str>>();
+    let mut secret_arr = secret_arr.split("\n").into_iter().map(|s| s.to_string()).collect::<Vec<String>>();
     secret_arr.remove(0); // remove header
     let secret_ids = cs_client.create_secrets(secret_arr, secrets.uuid)?;
     event!(Level::INFO, "Secrets were successfully created on the computation services." );

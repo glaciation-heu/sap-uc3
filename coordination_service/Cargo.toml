@@ -9,8 +9,8 @@ path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-poem = "3.1.5"
-poem-openapi = { version = "5.1.4", features = ["swagger-ui"] }
+poem = "3.1.12"
+poem-openapi = { version = "5.1.16", features = ["swagger-ui"] }
 tracing-subscriber = "0.3.19"
 tracing = "0.1.41"
 tokio = { version = "1.42.0", features = ["macros", "rt-multi-thread"] }
@@ -27,6 +27,7 @@ envsubst = "0.2.1"
 mockall = "0.13.1"
 derive_more = {version = "1.0.0", features = ["from"]}
 thiserror = "2.0.11"
+cs_interface = { path = "../cs_interface" }
 
 [dev-dependencies]
 tempdir = "0.3.7"

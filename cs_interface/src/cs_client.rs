@@ -7,9 +7,9 @@ use serde::Serialize;
 /// Mockable cs client interface
 #[automock]
 pub trait CsClient {
-    fn create_secrets<'a>(
+    fn create_secrets(
         &self,
-        secrets: Vec<&'a str>,
+        secrets: Vec<String>,
         uuid: Option<String>,
     ) -> Result<Vec<String>>;
     fn delete_secrets(&self, secrets: Vec<String>) -> Result<String>;
@@ -138,16 +138,20 @@ mod java_cs_client {
             match self.command.output() {
                 Ok(output) => {
                     let stderr = String::from_utf8(output.stderr)?;
-                    if stderr != "" {
+                    let stdout = String::from_utf8(output.stdout)?;
+                    if !stderr.trim().is_empty() {
+                        event!(Level::ERROR, "stderr is not empty: {}\n{}", stderr, stdout);
                         return Err(Error::CommandError(stderr));
                     }
                     if output.status.success() {
-                        return Ok(String::from_utf8(output.stdout)?);
+                        return Ok(stdout);
                     } else {
                         return Err(Error::CommandError(format!(
-                            "Unable to execute command {:?} status {:?}",
+                            "Unable to execute command {:?} status {:?}\n{}\n{}",
                             self.command,
-                            output.status
+                            output.status.code(),
+                            stderr,
+                            stdout
                         )));
                     }
                 }
@@ -164,9 +168,9 @@ mod java_cs_client {
             self.config.providers.iter().map(|p| p.base_url.clone()).collect()
         }
         /// Create a new secret
-        fn create_secrets<'a>(
+        fn create_secrets(
             &self,
-            secrets: Vec<&'a str>,
+            secrets: Vec<String>,
             uuid: Option<String>,
         ) -> Result<Vec<String>> {
             self.config.save_config_json()?;

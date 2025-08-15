@@ -1,11 +1,11 @@
 use poem_openapi::{payload::Json , ApiResponse, Object};
 use serde::{Serialize, Deserialize};
 use tracing::{event, Level};
-use crate::{cs_definitions, db::{models::Participation, participation_ops, collab_ops}, error::Result};
+use crate::{api::config::CarbynestackConfig, db::{collab_ops, models::Participation, participation_ops}, error::Result};
 
 #[derive(Object, Deserialize, Serialize)]
 pub struct RegisterParticipationResponseBody {
-    cs_config: cs_definitions::CsConfig,
+    cs_config: CarbynestackConfig,
     csv_specification: String
 }
 

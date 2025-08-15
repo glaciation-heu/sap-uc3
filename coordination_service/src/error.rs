@@ -50,7 +50,13 @@ pub enum Error {
     B64DecodeError(#[from] base64::DecodeError),
 
     #[error("Environment variable error {0}")]
-    EnvVarError(#[from] env::VarError)
+    EnvVarError(#[from] env::VarError), 
+
+    #[error("parse from utf8 error {0}")]
+    StdError(#[from] std::string::FromUtf8Error),
+
+    #[error("HTTP-Error: status {code}, message: {message}")]
+    HttpError{code: u16, message: String},
 }
 
 impl From<&str> for Error {
@@ -65,6 +71,21 @@ impl From<String> for Error {
     }
 }
 
+impl From<cs_interface::Error> for Error {
+    fn from(value: cs_interface::Error) -> Self {
+        match value {
+            cs_interface::Error::EnvVarError(e) => Self::EnvVarError(e),
+            cs_interface::Error::CommandError(e) => Self::Unprocessable { message: e },
+            cs_interface::Error::Io(error) => Self::Io(error),
+            cs_interface::Error::SerdeJson(error) => Self::SerdeJson(error),
+            cs_interface::Error::ReqwestError(error) => Self::ReqwestError(error),
+            cs_interface::Error::HttpError { code, message } => Self::HttpError{ code, message},
+            cs_interface::Error::StdError(e) => Self::StdError(e),
+            cs_interface::Error::B64DecodeError(decode_error) => Self::Custom(format!("Decode error: {}", decode_error.to_string())),
+        }
+    }
+}
+
 /// Response error implementation for
 impl ResponseError for Error {
     fn status(&self) -> StatusCode {
@@ -75,6 +96,7 @@ impl ResponseError for Error {
             Error::Unprocessable{message: _} => StatusCode::UNPROCESSABLE_ENTITY,
             Error::ProcessingNotFinished => StatusCode::from_u16(409).unwrap(),
             Error::Forbidden => StatusCode::FORBIDDEN,
+            Error::HttpError { code, message: _ } => StatusCode::from_u16(*code).unwrap(),
             Error::DieselError(err) => {
                 event!(Level::INFO, "Diesel error: {:?}", err);
                 println!("Disel error: {:?}", err);
@@ -103,31 +125,36 @@ impl ApiResponse for Error {
                     description: "Internal Server error",
                     status: Some(500),
                     content: vec![],
-                    headers: vec![]
+                    headers: vec![],
+                    status_range: None
                 },
                 MetaResponse {
                     description: "Not found",
                     status: Some(404),
                     content: vec![],
-                    headers: vec![]
+                    headers: vec![],
+                    status_range: None
                 },
                 MetaResponse {
                     description: "Not finished",
                     status: Some(409),
                     content: vec![],
-                    headers: vec![]
+                    headers: vec![],
+                    status_range: None
                 },
                 MetaResponse {
                     description: "Unprocessable",
                     status: Some(422),
                     content: vec![],
-                    headers: vec![]
+                    headers: vec![],
+                    status_range: None
                 },
                 MetaResponse {
                     description: "Forbidden",
                     status: Some(403),
                     content: vec![],
-                    headers: vec![]
+                    headers: vec![],
+                    status_range: None
                 }
             ]
         }
@@ -136,4 +163,5 @@ impl ApiResponse for Error {
     fn register(registry: &mut Registry) {
         let _ = registry;
     }
+
 }

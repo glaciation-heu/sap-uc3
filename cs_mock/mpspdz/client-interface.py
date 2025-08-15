@@ -11,9 +11,8 @@ from domains import *
 base_port = 10000
 
 client_id = 0
-nr_of_outputs = int(sys.argv[1])
 
-data = list(map(lambda x: int(x), sys.argv[2:]))
+data = list(map(lambda x: int(x), sys.argv[1:]))
 #bonus = [200, 300]
 
 client = Client(['party0', 'party1'], base_port, client_id)

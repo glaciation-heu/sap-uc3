@@ -91,7 +91,7 @@ impl ResponseError for Error {
             "code": self.status().as_u16(),
             "message": self.to_string(),
         })).unwrap();
-        event!(Level::INFO, "Return error response: {:?}", body);
+        event!(Level::INFO, "Return error response: {:?}", self.to_string());
         poem::Response::builder().status(self.status()).body(body).into_response()
     }
 }
@@ -104,25 +104,29 @@ impl ApiResponse for Error {
                     description: "Internal Server error",
                     status: Some(500),
                     content: vec![],
-                    headers: vec![]
+                    headers: vec![],
+                    status_range: None
                 },
                 MetaResponse {
                     description: "Not found",
                     status: Some(404),
                     content: vec![],
-                    headers: vec![]
+                    headers: vec![],
+                    status_range: None
                 },
                 MetaResponse {
                     description: "Not finished",
                     status: Some(409),
                     content: vec![],
-                    headers: vec![]
+                    headers: vec![],
+                    status_range: None
                 },
                 MetaResponse {
                     description: "Unprocessable",
                     status: Some(422),
                     content: vec![],
-                    headers: vec![]
+                    headers: vec![],
+                    status_range: None
                 }
             ]
         }

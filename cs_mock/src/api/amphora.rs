@@ -16,16 +16,17 @@ use std::ops::{Add, Mul};
 use super::utils::{to_bigint_arr, to_gfp};
 
 pub struct AmphoraApi;
-#[OpenApi(prefix_path = "/:vcp_nr/amphora")]
+#[OpenApi]
 impl AmphoraApi {
     /// Retrieve a set of party individual InputMask shares. The InputMaks can be used to secret share confidential data (compute a MaskedInput).
-    #[oai(path = "/input-masks", method = "get")]
+    #[oai(path = "/:vcp_nr/amphora/input-masks", method = "get")]
     async fn get_input_masks(
         &self,
-        #[oai(name = "requestId")] request_id: Query<String>,
-        count: Query<i64>,
         vcp_nr: Path<i32>,
+        #[oai(name = "requestId")] request_id: Query<String>,
+        count: Query<i32>
     ) -> Result<GetInputMasksResponses> {
+        event!(Level::INFO, "Request to get input-masks from vcp {}", vcp_nr.0);
         Ok(GetInputMasksResponses::OK(Json(generate_input_masks(
             vcp_nr.0,
             request_id.0,
@@ -34,11 +35,11 @@ impl AmphoraApi {
     }
 
     /// A MaskedInput is used to securely secret share values with the participating parties. Amphora will then use this MaskedInput to compute its individual SecretShare together with the provided tags.
-    #[oai(path = "/masked-inputs", method = "post")]
+    #[oai(path = "/:vcp_nr/amphora/masked-inputs", method = "post")]
     async fn post_masked_input(
         &self,
-        body: Json<UploadMaskedInputObject>,
         vcp_nr: Path<i32>,
+        body: Json<UploadMaskedInputObject>,
     ) -> Result<PostMaskedInputResponse> {
         event!(
             Level::DEBUG,
@@ -49,11 +50,11 @@ impl AmphoraApi {
         Ok(PostMaskedInputResponse::OK(Json(body.0.secret_id)))
     }
 
-    #[oai(path = "/secret-shares/:secretId", method = "get")]
+    #[oai(path = "/:vcp_nr/amphora/secret-shares/:secretId", method = "get")]
     async fn get_secret_share(
         &self,
-        #[oai(name = "secretId")] secret_id: Path<String>,
         vcp_nr: Path<i32>,
+        #[oai(name = "secretId")] secret_id: Path<String>,
         #[oai(name = "requestId")] request_id: Query<String>,
     ) -> Result<GetSecretShareResponse> {
         let id = secret_id.0.clone();
@@ -141,11 +142,11 @@ struct InputMasksObject {
     u: (BigInt, BigInt),
     w: (BigInt, BigInt),
 }
-static P: Lazy<BigInt> =
+pub static P: Lazy<BigInt> =
     Lazy::new(|| BigInt::from_str("198766463529478683931867765928436695041").unwrap());
-static R: Lazy<BigInt> =
+pub static R: Lazy<BigInt> =
     Lazy::new(|| BigInt::from_str("141515903391459779531506841503331516415").unwrap());
-static R_INV: Lazy<BigInt> =
+pub static R_INV: Lazy<BigInt> =
     Lazy::new(|| BigInt::from_str("133854242216446749056083838363708373830").unwrap());
 
 impl InputMasksObject {
@@ -218,7 +219,7 @@ static GLOBAL_SECRETS: Lazy<Mutex<HashMap<String, Vec<(BigInt, BigInt)>>>> = Laz
     Mutex::new(m)
 });
 
-fn generate_input_masks(vcp: i32, id: String, count: i64) -> OutputDeliveryObject {
+fn generate_input_masks(vcp: i32, id: String, count: i32) -> OutputDeliveryObject {
     // Try to get previously generated randomness
     let mut random_db = GLOBAL_RANDOMNESS.lock().unwrap();
     if !random_db.contains_key(&id) {
@@ -279,7 +280,23 @@ fn generate_input_masks(vcp: i32, id: String, count: i64) -> OutputDeliveryObjec
     }
 }
 
-fn get_secret_share(vcp: i32, secret_id: &String, request_id: &String) -> OutputDeliveryObject {
+pub fn delete_secret(secret_id: &String) {
+    let mut secrets = GLOBAL_SECRETS.lock().unwrap();
+    secrets.remove(secret_id);
+}
+
+pub fn get_secrets_internal(secret_id: &String) -> Vec<(BigInt, BigInt)> {
+    let secrets = GLOBAL_SECRETS.lock().unwrap();
+    if let Some(s) = secrets.get(secret_id) {
+        event!(Level::INFO, "Found secrets for id {}", secret_id);
+        s.clone()
+    } else {
+        event!(Level::WARN, "Did not found secrets for id {}", secret_id);
+        Vec::new()
+    }
+}
+
+pub fn get_secret_share(vcp: i32, secret_id: &String, request_id: &String) -> OutputDeliveryObject {
     let secrets = GLOBAL_SECRETS.lock().unwrap();
     if let Some(secret) = secrets.get(secret_id) {
         event!(
@@ -347,7 +364,7 @@ fn get_secret_share(vcp: i32, secret_id: &String, request_id: &String) -> Output
 }
 
 fn add_secrets(vcp: i32, secret_id: &String, data: &Vec<DataObject>) {
-    event!(Level::INFO, "From {} with data {}", vcp, data.len());
+    event!(Level::INFO, "From {} with data len {} and id {}", vcp, data.len(), secret_id);
     let random_db = GLOBAL_RANDOMNESS.lock().unwrap();
     let input_masks = random_db.get(secret_id).expect("Secret ID not found");
     // let decoded_data = BASE64_STANDARD.decode(&data).expect("Unable to decode base64 encoded data");
@@ -380,13 +397,13 @@ fn add_secrets(vcp: i32, secret_id: &String, data: &Vec<DataObject>) {
             } else {
                 z.1.secret.0.clone()
             };
-            event!(
-                Level::INFO,
-                "vcp {} Adding {} to {}",
-                vcp,
-                z.0,
-                secret_to_add
-            );
+            //event!(
+            //    Level::INFO,
+            //    "vcp {} Adding {} to {}",
+            //    vcp,
+            //    z.0,
+            //    secret_to_add
+            //);
             let mut val =
                 z.0.add(secret_to_add.mul(BigInt::from_str("2").unwrap()))
                     .div_floor(&BigInt::from_str("2").unwrap());

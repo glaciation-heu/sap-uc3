@@ -1,54 +1,13 @@
 use std::io::{BufWriter, Write};
 
+use cs_interface::CarbynestackProvider;
 use poem_openapi::Object;
 use serde::{Serialize, Deserialize};
 
 use crate::db::{self, models::{CsProvider, NewCsConfig, CsConfig}};
 use crate::error::Result;
 type BigNumber = String;
-
-/// Config for carbynestack as defined at https://carbynestack.io/documentation/getting-started/cli/
-#[derive(Object, Deserialize, Serialize)]
-#[oai(rename_all = "camelCase")]
-#[serde(rename_all = "camelCase")]
-pub struct CarbynestackConfig {
-    /// The Prime as used by the MPC backend
-    pub prime: BigNumber,
-    /// The auxiliary modulus R as used by the MPC backend
-    pub r: BigNumber,
-    /// The multiplicative inverse for the auxiliary modulus R as used by the MPC backend
-    pub rinv: BigNumber,
-    pub no_ssl_validation: bool,
-    pub providers: Vec<CarbynestackProvider>
-}
-
-#[derive(Object, Deserialize, Serialize)]
-#[oai(rename_all = "camelCase")]
-#[serde(rename_all = "camelCase")]
-pub struct CarbynestackProvider {
-    pub id: i32,
-    pub amphora_service_url: String,
-    pub castor_service_url: String,
-    pub ephemeral_service_url: String,
-    pub base_url: String
-}
-
-impl CarbynestackConfig {
-    /// Save the CarbyneStack config to $HOME/.cs/config
-    pub fn save_config_json(&self) -> Result<()> {
-        let config_dir = format!("{}/.cs/config",env!("HOME"));
-        let f = std::fs::OpenOptions::new().write(true).truncate(true).create(true).open(config_dir)?;
-        let mut writer = BufWriter::new(f);
-        let _ = serde_json::to_writer(&mut writer, self);
-        writer.flush()?;
-        Ok(())
-    }
-    /// Parse CarbyneStack config from json
-    pub fn from_json(json: &str) -> Result<CarbynestackConfig> {
-        let from_json: CarbynestackConfig = serde_json::from_str(json)?;
-        Ok(from_json)
-    }
-}
+pub use cs_interface::CarbynestackConfig;
 
 /// Save the config to the corresponding collaboration
 pub fn add_config(config: CarbynestackConfig, db_url: &str) -> Result<CsConfig> {

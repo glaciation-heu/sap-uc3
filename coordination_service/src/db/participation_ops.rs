@@ -1,14 +1,22 @@
+use cs_interface::{CsClient, JavaCsClient};
 use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
+use poem_openapi::Object;
 use tracing::{event, Level};
 
 use crate::{
-    cs_execute::{execute_program, ExecutionResult},
-    db::{
+    api::config::get_config, db::{
         collab_ops, establish_connection, models::{NewParticipation, Participation}
-    },
-    error::Result,
-    notification_service::notify_parties,
+    }, error::Result, notification_service::notify_parties
 };
+
+#[derive(Object)]
+#[oai(rename_all = "camelCase")]
+pub struct ExecutionResult {
+    pub message: String,
+    pub code: i32,
+    pub collaboration_id: i32,
+    pub secret_id: Option<String>
+}
 
 /// Create new participation between user and collaboration
 pub fn create_participation(collaboration_id: i32, party_id: i32, db_url: &str) -> Result<Participation> {
@@ -110,17 +118,21 @@ async fn check_and_execute(collab_id: i32, db_url: &str) -> Result<()> {
     };
     //let (res, res_ids) =
     //    execute_program(collab.mpc_program, collab.id, secret_ids, collab.config_id, db_url);
-    let result = execute_program(collab.mpc_program, collab.id, secret_ids, collab.config_id, db_url);
+    let config = get_config(collab_id, db_url)?;
+    let result = JavaCsClient::new(config)?.execute_program(collab.mpc_program, secret_ids);
     let res = match result {
-        Ok((res, res_ids)) => {
+        Ok(res_id) => {
             // write results
-            if let Some(ids) = res_ids {
-                collab_ops::set_result_finished(
-                    collab_id,
-                    ids.into_iter().map(|e| Some(e)).collect::<Vec<Option<String>>>(), 
-                    db_url)?;
+            collab_ops::set_result_finished(
+                collab_id,
+                vec![Some(res_id.clone())], 
+                db_url)?;
+            ExecutionResult {
+                message: "Success".to_string(),
+                code: 200,
+                collaboration_id: collab_id,
+                secret_id: Some(res_id)
             }
-            res
         },
         Err(err) => {
             let err_message = err.to_string();

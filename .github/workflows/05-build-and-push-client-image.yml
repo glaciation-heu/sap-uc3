@@ -51,7 +51,7 @@ jobs:
         id: push-client-service
         uses: docker/build-push-action@v6
         with:
-          context: ./client_service
+          file: ./Dockerfile.client_service
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max

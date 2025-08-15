@@ -2,7 +2,7 @@ use poem_openapi::types::ToJSON;
 use reqwest::Client;
 use tracing::{event, Level};
 
-use crate::{cs_execute::ExecutionResult, error::Result};
+use crate::{db::participation_ops::ExecutionResult, error::Result};
 
 pub async fn notify_parties(output_parties: Vec<String>, result: ExecutionResult) -> Result<()> {
     event!(Level::INFO, "Notifying output parties {:?}", output_parties);

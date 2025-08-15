@@ -3,7 +3,7 @@ use poem_openapi::{param::{Path, Query}, payload::{Json, PlainText}, types::mult
 use serde::{Serialize, Deserialize};
 use base64::prelude::*;
 use tracing::{event, Level};
-use crate::{cs_definitions, db::{collab_ops, models::{Collaboration, NewCollaboration}}, error::Result};
+use crate::{db::{collab_ops, models::{Collaboration, NewCollaboration}}, error::Result};
 use super::{config::{self, get_config, CarbynestackConfig}, participation};
 
 pub struct CollabApi;
@@ -131,7 +131,7 @@ impl CollabApi {
 #[derive(Object, Deserialize, Serialize)]
 pub struct RegisterCollaborationResponseBody {
     /// The carbynestack configuration of the registered collaboration
-    cs_config: cs_definitions::CsConfig,
+    cs_config: CarbynestackConfig,
     /// The csv header line used to specify the csv data
     csv_specification: String
 }
