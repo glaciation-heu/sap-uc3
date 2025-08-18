@@ -1,6 +1,6 @@
 apiVersion: v2
 name: coordination-service
-version: 0.1.4
+version: 0.1.5
 description: coordinatio-service helm chart
 maintainers:
 - name: Nicolai Huening
