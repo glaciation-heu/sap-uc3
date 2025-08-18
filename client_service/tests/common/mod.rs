@@ -97,6 +97,7 @@ pub async fn setup_env() -> Collaboration {
 // "#).file_name("cs_config");
     let program = Part::bytes(br#"
 # Prologue to read in the inputs
+listen_for_clients(PORTNUM)
 port=regint(10000)
 listen(port)
 socket_id = regint()

@@ -1,5 +1,4 @@
-use core::time;
-use std::thread;
+use std::env;
 
 use cs_interface::{CarbynestackConfig, CarbynestackProvider, CsClient};
 use poem::Result;
@@ -34,6 +33,11 @@ fn cs_config() -> CarbynestackConfig {
     }
 }
 
+fn use_mpc() -> bool {
+    // Check if USE_MPSPDZ environment variable is set.
+    env::var("USE_MPSPDZ").is_ok()
+}
+
 const RESULT_UUID:&str = "00000000-0000-0000-0000-000000000000";
 pub struct EphemeralApi;
 #[OpenApi]
@@ -48,7 +52,7 @@ impl EphemeralApi {
         let resp_obj = ComputationResponse {
             response: vec![RESULT_UUID.to_string()]
         };
-        if vcp_id.0 == 0 {
+        if vcp_id.0 == 0 && use_mpc() {
             // delete prev results
             delete_secret(&RESULT_UUID.to_string());
 

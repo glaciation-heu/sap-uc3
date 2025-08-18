@@ -59,7 +59,7 @@ impl From<cs_interface::Error> for Error {
     fn from(value: cs_interface::Error) -> Self {
         match value {
             cs_interface::Error::EnvVarError(e) => Self::EnvVarError(e),
-            cs_interface::Error::CommandError(e) => Self::Unprocessable { message: e },
+            cs_interface::Error::CommandError(e) => Self::InternalServerError { message: e },
             cs_interface::Error::Io(error) => Self::Io(error),
             cs_interface::Error::SerdeJson(error) => Self::SerdeJson(error),
             cs_interface::Error::ReqwestError(error) => Self::ReqwestError(error),
