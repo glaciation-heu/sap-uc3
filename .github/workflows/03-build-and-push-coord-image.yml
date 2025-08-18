@@ -51,7 +51,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
           tags: |
             ghcr.io/glaciation-heu/sap-uc3/coordination_service:${{ env.GIT_TAG }}
             ghcr.io/glaciation-heu/sap-uc3/coordination_service:latest
@@ -79,7 +79,7 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
           tags: |
             ghcr.io/glaciation-heu/sap-uc3/smoketesting:${{ env.GIT_TAG }}
             ghcr.io/glaciation-heu/sap-uc3/smoketesting:latest
