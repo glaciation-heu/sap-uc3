@@ -68,7 +68,7 @@ ADD cs_mock/mpspdz/execute.sh .
 CMD [ "./execute.sh" ]
 
 FROM mpspdz
-
+RUN apt update
 RUN apt install gettext-base openjdk-17-jre openssl libssl-dev libpq-dev --yes
 
 ENV CLI_VERSION=0.4.1

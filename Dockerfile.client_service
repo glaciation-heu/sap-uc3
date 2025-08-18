@@ -23,9 +23,9 @@ ADD ./client_service .
 # RUN cargo update -p openssl-sys
 RUN cargo build --release
 
-FROM debian:stable-slim
-RUN apt-get update
-RUN apt-get install gettext-base openjdk-17-jre openssl libssl-dev libpq-dev --yes
+FROM debian:bookworm-slim
+RUN apt update
+RUN apt install gettext-base openjdk-17-jre openssl libssl-dev libpq-dev --yes
 
 # get binaries from builder
 COPY --from=builder /usr/local/cs.jar /usr/local/cs.jar
