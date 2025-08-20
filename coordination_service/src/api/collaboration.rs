@@ -1,5 +1,5 @@
 use poem::web::Data;
-use poem_openapi::{param::{Path, Query}, payload::{Json, PlainText}, types::multipart::Upload, ApiResponse, Multipart, Object, OpenApi};
+use poem_openapi::{param::{Path, Query}, payload::Json, types::multipart::Upload, ApiResponse, Multipart, Object, OpenApi};
 use serde::{Serialize, Deserialize};
 use base64::prelude::*;
 use tracing::{event, Level};

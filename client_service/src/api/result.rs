@@ -36,8 +36,6 @@ async fn get_result_ids(coord_uri: &str, collab_id: i32, net: &impl NetAccess) -
 
 #[cfg(test)]
 mod test {
-    use std::env;
-
     use tokio_test::assert_err;
 
     use cs_interface::{MockCsClient, MockNetAccess};

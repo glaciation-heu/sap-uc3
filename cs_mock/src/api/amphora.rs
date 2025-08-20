@@ -525,8 +525,8 @@ mod test {
         let uuid = "b3bde039-d497-4b71-9956-db12f2dddbec".to_string();
         let secrets = vec![BigInt::from_str("1").unwrap(),BigInt::from_str("2").unwrap(),BigInt::from_str("3").unwrap()];
         // generate input masks from both providers
-        let m_0 = generate_input_masks(0, uuid.clone(), secrets.len() as i64);
-        let m_1 = generate_input_masks(1, uuid.clone(), secrets.len() as i64);
+        let m_0 = generate_input_masks(0, uuid.clone(), secrets.len() as i32);
+        let m_1 = generate_input_masks(1, uuid.clone(), secrets.len() as i32);
 
         // encode secret with the help of input masks
         let zipped = zipp_shares(&vec![m_0, m_1], &R_INV, &P);

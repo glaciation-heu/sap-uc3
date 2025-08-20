@@ -74,7 +74,7 @@ impl EphemeralApi {
                 client.create_secrets(secrets, Some(RESULT_UUID.to_string())).expect("Error creating secret!");
             }).await;
         } else if vcp_id.0 == 0 {
-            // sleep for a second
+            event!(Level::INFO, "Sleep 1 second to simulate MPC computation");
             tokio::time::sleep(time::Duration::from_millis(1000)).await;
         } else {
             event!(Level::INFO, "Do nothing");

@@ -1,12 +1,7 @@
-use std::io::{BufWriter, Write};
-
 use cs_interface::CarbynestackProvider;
-use poem_openapi::Object;
-use serde::{Serialize, Deserialize};
 
 use crate::db::{self, models::{CsProvider, NewCsConfig, CsConfig}};
 use crate::error::Result;
-type BigNumber = String;
 pub use cs_interface::CarbynestackConfig;
 
 /// Save the config to the corresponding collaboration
