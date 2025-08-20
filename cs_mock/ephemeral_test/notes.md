@@ -1,2 +1,0 @@
-curl -X POST "http://localhost:8080/?compile=true" -d '{"gameID":"3fa85f64-5717-4562-b3fc-2c963f66afa6","amphoraParams":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"output":{"type": "AMPHORASECRET"},"code":"string","secretParams":[]}' -H "Content-Type: application/json"
-curl -X POST "http://party1:8080/?compile=true" -d '{"gameID":"3fa85f64-5717-4562-b3fc-2c963f66afa6","amphoraParams":["3fa85f64-5717-4562-b3fc-2c963f66afa6"],"output":{"type": "AMPHORASECRET"},"code":"string","secretParams":[]}' -H "Content-Type: application/json"
