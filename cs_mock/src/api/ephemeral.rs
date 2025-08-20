@@ -1,3 +1,4 @@
+use core::time;
 use std::env;
 
 use cs_interface::{CarbynestackConfig, CarbynestackProvider, CsClient};
@@ -52,7 +53,9 @@ impl EphemeralApi {
         let resp_obj = ComputationResponse {
             response: vec![RESULT_UUID.to_string()]
         };
-        if vcp_id.0 == 0 && use_mpc() {
+        let empty_program = data.code.eq("0");
+        // Run manual computation when defined in env variables and program is not "0".
+        if vcp_id.0 == 0 && use_mpc() && compile.0 && !empty_program {
             // delete prev results
             delete_secret(&RESULT_UUID.to_string());
 
@@ -70,6 +73,9 @@ impl EphemeralApi {
                 let client = cs_interface::JavaCsClient::new(cs_config()).expect("Unable to create Java CS client");
                 client.create_secrets(secrets, Some(RESULT_UUID.to_string())).expect("Error creating secret!");
             }).await;
+        } else if vcp_id.0 == 0 {
+            // sleep for a second
+            tokio::time::sleep(time::Duration::from_millis(1000)).await;
         } else {
             event!(Level::INFO, "Do nothing");
         }
