@@ -2,7 +2,18 @@ apiVersion: v1
 entries:
   client-service:
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.573667855Z"
+    created: "2025-09-15T13:19:34.233367522Z"
+    description: client-service helm chart
+    digest: c2ad2f6cb563f810d4da7f67d03b79c471dec60a0128afbae6742560616b5f86
+    maintainers:
+    - email: nicolai-huening@sap.com
+      name: Nicolai Huening
+    name: client-service
+    urls:
+    - /sap-uc3/client_service/client-service-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    created: "2025-09-15T13:19:34.233143262Z"
     description: client-service helm chart
     digest: d474ae3879c5a224a7f160dba58f7c1122953c143c29d94550a10eb9fc0dc181
     maintainers:
@@ -13,7 +24,7 @@ entries:
     - /sap-uc3/client_service/client-service-0.1.6.tgz
     version: 0.1.6
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.573437394Z"
+    created: "2025-09-15T13:19:34.232954288Z"
     description: client-service helm chart
     digest: a82e4f27a75bec64b6002f472cc1ea3bc73bc5f8eabc8757f1ec43536b0db89a
     maintainers:
@@ -24,7 +35,7 @@ entries:
     - /sap-uc3/client_service/client-service-0.1.5.tgz
     version: 0.1.5
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.573149354Z"
+    created: "2025-09-15T13:19:34.232755145Z"
     description: client-service helm chart
     digest: 8b059d61f9cfa4234d1cf7d46e5a94211c96af2d422210bbf0ed50eaf62a922e
     maintainers:
@@ -35,7 +46,7 @@ entries:
     - /sap-uc3/client_service/client-service-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.572535779Z"
+    created: "2025-09-15T13:19:34.232536756Z"
     description: client-service helm chart
     digest: 02ba845b1df31a0eef20da97519aad256f95b94e2c8a4aa001626ed1ae773cb2
     maintainers:
@@ -46,7 +57,7 @@ entries:
     - /sap-uc3/client_service/client-service-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.5718849Z"
+    created: "2025-09-15T13:19:34.232312135Z"
     description: client-service helm chart
     digest: 18cc862ede3fca378c21bb4672bc386985ffd38d8bfc99a4a64f6869a60c33ee
     maintainers:
@@ -57,7 +68,7 @@ entries:
     - /sap-uc3/client_service/client-service-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.571684064Z"
+    created: "2025-09-15T13:19:34.232062828Z"
     description: client-service helm chart
     digest: 5ae638d8e2888e8c7969edf7fd902d805a07f1d8176b1251df1fb209f819c4db
     maintainers:
@@ -68,7 +79,7 @@ entries:
     - /sap-uc3/client_service/client-service-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.571469142Z"
+    created: "2025-09-15T13:19:34.231839981Z"
     description: client-service helm chart
     digest: 7a25e849ead65b04ac89c96906d28152c0c5642ce2bd8ad412d6dade7f658258
     maintainers:
@@ -80,7 +91,22 @@ entries:
     version: 0.1.0
   coordination-service:
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.602269643Z"
+    created: "2025-09-15T13:19:34.263798213Z"
+    dependencies:
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: "11"
+    description: coordinatio-service helm chart
+    digest: 91a4848a3815d02eba38a5c8655a0f3360af767a549046c340e34b530268540a
+    maintainers:
+    - email: nicolai-huening@sap.com
+      name: Nicolai Huening
+    name: coordination-service
+    urls:
+    - /sap-uc3/coordination_service/coordination-service-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    created: "2025-09-15T13:19:34.260330359Z"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
@@ -95,7 +121,7 @@ entries:
     - /sap-uc3/coordination_service/coordination-service-0.1.6.tgz
     version: 0.1.6
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.598007893Z"
+    created: "2025-09-15T13:19:34.256848758Z"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
@@ -110,7 +136,7 @@ entries:
     - /sap-uc3/coordination_service/coordination-service-0.1.5.tgz
     version: 0.1.5
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.594393807Z"
+    created: "2025-09-15T13:19:34.252333833Z"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
@@ -125,7 +151,7 @@ entries:
     - /sap-uc3/coordination_service/coordination-service-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.590724697Z"
+    created: "2025-09-15T13:19:34.248876137Z"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
@@ -140,7 +166,7 @@ entries:
     - /sap-uc3/coordination_service/coordination-service-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.585706378Z"
+    created: "2025-09-15T13:19:34.244575205Z"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
@@ -155,7 +181,7 @@ entries:
     - /sap-uc3/coordination_service/coordination-service-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.582033561Z"
+    created: "2025-09-15T13:19:34.241050984Z"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
@@ -170,7 +196,7 @@ entries:
     - /sap-uc3/coordination_service/coordination-service-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.577557007Z"
+    created: "2025-09-15T13:19:34.236975329Z"
     dependencies:
     - name: postgresql
       repository: https://charts.bitnami.com/bitnami
@@ -186,7 +212,18 @@ entries:
     version: 0.1.0
   csmock:
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.603744945Z"
+    created: "2025-09-15T13:19:34.266204413Z"
+    description: csmock helm chart
+    digest: 7365eb26e9af5a0d1908bb6172a3296349e7ad9860bbe29674fd2afe703349bb
+    maintainers:
+    - email: nicolai-huening@sap.com
+      name: Nicolai Huening
+    name: csmock
+    urls:
+    - /sap-uc3/csmock/csmock-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    created: "2025-09-15T13:19:34.266028764Z"
     description: csmock helm chart
     digest: e9922ae86579846e92c04a041d9aab84de25bb6d7243b548bedec7e7d1dff046
     maintainers:
@@ -197,7 +234,7 @@ entries:
     - /sap-uc3/csmock/csmock-0.1.6.tgz
     version: 0.1.6
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.603564467Z"
+    created: "2025-09-15T13:19:34.265844389Z"
     description: csmock helm chart
     digest: 6dd193b706d2bcb75dd486f887ff59ec9942a4f9eb986e69685c65b1b79731c7
     maintainers:
@@ -208,7 +245,7 @@ entries:
     - /sap-uc3/csmock/csmock-0.1.5.tgz
     version: 0.1.5
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.60337418Z"
+    created: "2025-09-15T13:19:34.265658611Z"
     description: csmock helm chart
     digest: cc51d4ac7172fdf4f2e992408169e80196c88be6d983cf9a46cbbc09a133dc23
     maintainers:
@@ -219,7 +256,7 @@ entries:
     - /sap-uc3/csmock/csmock-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.603186249Z"
+    created: "2025-09-15T13:19:34.265470509Z"
     description: csmock helm chart
     digest: df4ab0e46c1c177ab97dd35145ea2cf103994970303dc07f5f211d7f5d6ed2b5
     maintainers:
@@ -230,7 +267,7 @@ entries:
     - /sap-uc3/csmock/csmock-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.60294653Z"
+    created: "2025-09-15T13:19:34.265239846Z"
     description: csmock helm chart
     digest: 7a2d1aab7260627b9519240865480ceb833066ff66c5213d218b85385bcf0b16
     maintainers:
@@ -241,7 +278,7 @@ entries:
     - /sap-uc3/csmock/csmock-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.602730225Z"
+    created: "2025-09-15T13:19:34.264955684Z"
     description: csmock helm chart
     digest: 146d359651367f959bf1456c8238886dc5968ff17e670d5f02dd3f0164c50f30
     maintainers:
@@ -252,7 +289,7 @@ entries:
     - /sap-uc3/csmock/csmock-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.602506516Z"
+    created: "2025-09-15T13:19:34.264302137Z"
     description: csmock helm chart
     digest: f9ef232700bd9268be390ffdcfcc08db9495e13cd7148df38fc4d42eacf46365
     maintainers:
@@ -264,7 +301,31 @@ entries:
     version: 0.1.0
   secure-collab-computation:
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.636055006Z"
+    created: "2025-09-15T13:19:34.301312231Z"
+    dependencies:
+    - condition: client-service.enabled
+      name: client-service
+      repository: file://../client_service
+      version: 0.1.7
+    - name: coordination-service
+      repository: file://../coordination_service
+      version: 0.1.7
+    - condition: csmock.enabled
+      name: csmock
+      repository: file://../csmock
+      version: 0.1.7
+    description: Combined helm chart for services of the secure collaborative computation
+      service
+    digest: c37c8eb420a54e84c3284e9f052ac3cde07b2d811893e623b3466899e27d4181
+    maintainers:
+    - email: nicolai-huening@sap.com
+      name: Nicolai Huening
+    name: secure-collab-computation
+    urls:
+    - /sap-uc3/secure-collab-comp/secure-collab-computation-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    created: "2025-09-15T13:19:34.296552087Z"
     dependencies:
     - condition: client-service.enabled
       name: client-service
@@ -288,7 +349,7 @@ entries:
     - /sap-uc3/secure-collab-comp/secure-collab-computation-0.1.6.tgz
     version: 0.1.6
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.630995878Z"
+    created: "2025-09-15T13:19:34.292419407Z"
     dependencies:
     - condition: client-service.enabled
       name: client-service
@@ -312,7 +373,7 @@ entries:
     - /sap-uc3/secure-collab-comp/secure-collab-computation-0.1.5.tgz
     version: 0.1.5
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.625899572Z"
+    created: "2025-09-15T13:19:34.287698425Z"
     dependencies:
     - condition: client-service.enabled
       name: client-service
@@ -336,7 +397,7 @@ entries:
     - /sap-uc3/secure-collab-comp/secure-collab-computation-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.621734444Z"
+    created: "2025-09-15T13:19:34.283690278Z"
     dependencies:
     - condition: client-service.enabled
       name: client-service
@@ -360,7 +421,7 @@ entries:
     - /sap-uc3/secure-collab-comp/secure-collab-computation-0.1.3.tgz
     version: 0.1.3
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.617641881Z"
+    created: "2025-09-15T13:19:34.279042407Z"
     dependencies:
     - condition: client-service.enabled
       name: client-service
@@ -384,7 +445,7 @@ entries:
     - /sap-uc3/secure-collab-comp/secure-collab-computation-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.612768515Z"
+    created: "2025-09-15T13:19:34.275046914Z"
     dependencies:
     - condition: client-service.enabled
       name: client-service
@@ -408,7 +469,7 @@ entries:
     - /sap-uc3/secure-collab-comp/secure-collab-computation-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
-    created: "2025-08-20T09:00:50.608675743Z"
+    created: "2025-09-15T13:19:34.270282491Z"
     dependencies:
     - condition: client-service.enabled
       name: client-service
@@ -431,4 +492,4 @@ entries:
     urls:
     - /sap-uc3/secure-collab-comp/secure-collab-computation-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-20T09:00:50.571102035Z"
+generated: "2025-09-15T13:19:34.23149257Z"
