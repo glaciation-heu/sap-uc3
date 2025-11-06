@@ -12,7 +12,9 @@ base_port = 10000
 
 client_id = 0
 
+
 data = list(map(lambda x: int(x), sys.argv[1:]))
+data_len = len(data)
 #bonus = [200, 300]
 
 client = Client(['party0', 'party1'], base_port, client_id)
@@ -21,6 +23,10 @@ client = Client(['party0', 'party1'], base_port, client_id)
 # 3. Send Private Inputs
 # The client.send_private_inputs() function handles the entire
 # secret sharing and communication protocol for you.
+# First send len of data
+client.send_public_inputs([data_len])
+
+# Now send all private inputs
 client.send_private_inputs(data)
 
 # 4. Receive the Result
