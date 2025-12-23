@@ -1,6 +1,6 @@
 apiVersion: v2
 name: csmock
-version: 0.1.6
+version: 0.1.7
 description: csmock helm chart
 maintainers:
 - name: Nicolai Huening
