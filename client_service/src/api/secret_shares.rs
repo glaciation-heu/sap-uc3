@@ -63,7 +63,7 @@ pub async fn get_secret_share(secret_id: String, cs_client: &impl CsClient) -> R
                 let body = resp.bytes().await?.to_vec();
                 let s = String::from_utf8_lossy(&body);
                 if status.is_success() {
-                    event!(Level::INFO, "{}",s);
+                    event!(Level::INFO, "Shares retrieved from computation instance {}.", i);
                     let data: SecretShare = serde_json::from_str(s.to_string().as_str())?;
                     resp_arr[i] = Some(data);
                 } else {

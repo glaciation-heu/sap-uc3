@@ -17,7 +17,9 @@ pub async fn result(coord_uri: &str, collab_id: i32, _party_id: i32, cs_client: 
         let res = cs_client.get_secret(&id)?;
         secrets.push(res);
     }
-    Ok(ResultResponse::ComputationResult(Json(secrets)))
+
+    event!(Level::INFO, "results for collaboration {} successfully retrieved", collab_id);
+   Ok(ResultResponse::ComputationResult(Json(secrets)))
 }
 
 async fn get_result_ids(coord_uri: &str, collab_id: i32, net: &impl NetAccess) -> Result<Vec<String>> {

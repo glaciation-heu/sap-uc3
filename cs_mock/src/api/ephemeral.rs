@@ -49,7 +49,7 @@ impl EphemeralApi {
         #[oai(name= "vcp_id")]
         vcp_id: Path<i32>, data: Json<StartComputationPayload>, compile: Query<bool>) -> Result<ExecuteResp> {
         
-        event!(Level::INFO, "request for execution from vcp {}", vcp_id.0);
+        event!(Level::INFO, "Execution request from vcp {}", vcp_id.0);
         let resp_obj = ComputationResponse {
             response: vec![RESULT_UUID.to_string()]
         };

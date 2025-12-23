@@ -23,7 +23,7 @@ pub enum RegisterParticipationResponse {
 
 pub fn register_input_party(collaboration_id: i32, party_id: i32, db_url: &str) -> Result<RegisterParticipationResponse> {
     let resp = participation_ops::create_participation(collaboration_id, party_id, db_url)?;
-    event!(Level::INFO, "Party {} was registered as input-party to the collaboration with ID {}.", party_id, collaboration_id);
+    event!(Level::INFO, "Party {} registered as input party for collaboration {}.", party_id, collaboration_id);
     Ok(RegisterParticipationResponse::OK(Json(resp)))
 }
 

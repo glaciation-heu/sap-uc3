@@ -91,7 +91,7 @@ impl ResponseError for Error {
             "code": self.status().as_u16(),
             "message": self.to_string(),
         })).unwrap();
-        event!(Level::INFO, "Return error response: {:?}", self.to_string());
+        event!(Level::INFO, "Returning {} response", self.status());
         poem::Response::builder().status(self.status()).body(body).into_response()
     }
 }

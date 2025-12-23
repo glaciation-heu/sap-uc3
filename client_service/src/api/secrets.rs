@@ -40,7 +40,7 @@ pub async fn upload(collab_id: i32, party_id: i32, secrets: UploadPayload, cs_cl
     let mut secret_arr = secret_arr.split("\n").into_iter().map(|s| s.to_string()).collect::<Vec<String>>();
     secret_arr.remove(0); // remove header
     let secret_ids = cs_client.create_secrets(secret_arr, secrets.uuid)?;
-    event!(Level::INFO, "Secrets were successfully created on the computation services." );
+    event!(Level::INFO, "Secrets for collaboration {} and party {} successfully created on the computation instances", collab_id, party_id);
     register_upload(&secret_ids, collab_id, party_id, net).await?;
     Ok(UploadResponse::OK(Json(secret_ids)))
 }
@@ -49,7 +49,7 @@ async fn register_upload(secrets: &Vec<String>, collab_id: i32, party_id: i32, n
     let endpoint = format!("{}/collaboration/{}/confirm-upload/{}", utils::coordinator_uri(), collab_id, party_id);
     event!(Level::DEBUG, "Confirming upload to coordinator {}", endpoint);
     net.post(&endpoint, Json(secrets).to_json_string()).await?;
-    event!(Level::INFO, "Secrets were registered to the coordination service.");
+    event!(Level::INFO, "Secret upload registered with the coordination service.");
     Ok(())
 }
 

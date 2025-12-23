@@ -34,6 +34,8 @@ RUN apt-get update && apt-get install -y \
   libgmp-dev \
   libntl-dev \
   libsodium-dev \
+  libmpfr-dev \
+  libmpc-dev \
   libssl-dev \
   libtool \
   netcat

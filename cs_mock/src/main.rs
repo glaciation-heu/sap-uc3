@@ -9,7 +9,22 @@ mod computation;
 #[tokio::main(worker_threads = 4)]
 async fn main() {
 
-    tracing_subscriber::fmt().with_max_level(Level::DEBUG)
+    let loglevel = match env::var("LOG_LEVEL") {
+        Ok(level) => match level.as_str() {
+            "debug" => Level::DEBUG,
+            "info" => Level::INFO,
+            "warning" => Level::WARN,
+            "error" => Level::ERROR,
+            _ => Level::DEBUG
+        },
+        Err(_) => Level::DEBUG
+    };
+
+    tracing_subscriber::fmt()
+        .with_max_level(loglevel)
+        .compact()
+        //.without_time()
+        .with_target(false)
         .init();
 
     let port = match env::var("SERVICE_PORT") {

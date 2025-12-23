@@ -29,14 +29,12 @@ pub struct ClearTextSecret {
 // export JavaCsClient
 pub use java_cs_client::JavaCsClient;
 mod java_cs_client {
-    use crate::{CS_JAR, cs_config::CarbynestackConfig, error::Error};
-    use std::{env, ffi::OsStr, fs, io::Write, process::{Child, Command, Stdio}, sync::Mutex};
+    use crate::{cs_config::CarbynestackConfig, error::Error};
+    use std::{env, ffi::OsStr, io::Write, process::{Child, Command, Stdio}, sync::Mutex};
 
     use super::*;
     use base64::{prelude::BASE64_STANDARD, Engine};
-    use jni::InitArgsBuilder;
     use lazy_static::lazy_static;
-    use tempfile::NamedTempFile;
     use tracing::{event, Level};
 
     // used to prevent race condition on different cs-configs.
@@ -241,7 +239,7 @@ mod java_cs_client {
                     .replace("[", "")
                     .replace("]", "");
                 event!(Level::DEBUG, "Try parsing {}", &stdout);
-                event!(Level::INFO, "MPC Execution finished successfully.");
+                event!(Level::INFO, "MPC Execution completed successfully.");
                 Ok(stdout)
             } else {
                 let message = format!("Error:\nstderr:\n{}\nstdout\n{}", String::from_utf8_lossy(&output.stderr), String::from_utf8_lossy(&output.stdout));

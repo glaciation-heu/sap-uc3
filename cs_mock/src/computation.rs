@@ -38,7 +38,7 @@ pub async fn run_computation(program: String, data: Vec<BigInt>) -> Result<Vec<i
 
     // Run the computation
     let data = data.into_iter().map(|d| d.to_string()).collect::<Vec<String>>();
-    event!(Level::INFO, "Running with data: {:?}", data);
+    event!(Level::INFO, "Start computation");
     let output = Command::new("python").arg("ExternalIO/client-interface.py").args(data.into_iter().map(|d| d.to_string())).output().expect("Expecting outputs to return stuff");
     let stderr = String::from_utf8_lossy(&output.stderr).to_string();
     if output.status.success() {
@@ -49,7 +49,7 @@ pub async fn run_computation(program: String, data: Vec<BigInt>) -> Result<Vec<i
         let stdout = String::from_utf8_lossy(&output.stdout).to_string();
         match serde_json::from_str::<Vec<i32>>(&stdout) {
             Ok(data) => {
-                event!(Level::INFO, "Computation successfully finished {:?}", data);
+                event!(Level::INFO, "Computation successfully finished");
                 return Ok(data)
             },
             Err(e) => {

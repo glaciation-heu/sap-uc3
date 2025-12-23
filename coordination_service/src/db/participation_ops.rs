@@ -86,7 +86,7 @@ async fn check_and_execute(collab_id: i32, db_url: &str) -> Result<()> {
     if participation_nr < collab.participation_number as usize {
         event!(
             Level::INFO,
-            "Not enough participations to start the computation. The current number is {} of {}.",
+            "Insufficient participants to start computation. Current cout: {} of {}.",
             participation_nr,
             collab.participation_number as i64
         );
@@ -95,7 +95,7 @@ async fn check_and_execute(collab_id: i32, db_url: &str) -> Result<()> {
     event!(
         Level::INFO,
         "Starting MPC execution of collaboration {}.",
-        collab.name
+        collab.id
     );
 
     // Set execution result as started

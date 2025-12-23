@@ -5,7 +5,7 @@ use tracing::{event, Level};
 use crate::{db::participation_ops::ExecutionResult, error::Result};
 
 pub async fn notify_parties(output_parties: Vec<String>, result: ExecutionResult) -> Result<()> {
-    event!(Level::INFO, "Notifying output parties {:?}", output_parties);
+    event!(Level::INFO, "Notifying output parties: {:?}", output_parties);
     for party in output_parties {
         let response = Client::new()
             .put(format!("{}/notify", party))

@@ -364,7 +364,7 @@ pub fn get_secret_share(vcp: i32, secret_id: &String, request_id: &String) -> Ou
 }
 
 fn add_secrets(vcp: i32, secret_id: &String, data: &Vec<DataObject>) {
-    event!(Level::INFO, "From {} with data len {} and id {}", vcp, data.len(), secret_id);
+    event!(Level::INFO, "Add secrets from party {} with data len {} and id {}", vcp, data.len(), secret_id);
     let random_db = GLOBAL_RANDOMNESS.lock().unwrap();
     let input_masks = random_db.get(secret_id).expect("Secret ID not found");
     // let decoded_data = BASE64_STANDARD.decode(&data).expect("Unable to decode base64 encoded data");
