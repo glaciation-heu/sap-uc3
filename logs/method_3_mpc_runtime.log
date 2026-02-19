@@ -1,0 +1,182 @@
+Computing best split per node/depth 0 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 24.5207 seconds 
+Data sent = 137.956 MB in ~335784 rounds (party 0 only; use '-v' for more details)
+Global data sent = 413.895 MB (all parties)
+
+Computing best split per node/depth 1 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 48.9607 seconds 
+Data sent = 275.772 MB in ~671536 rounds (party 0 only; use '-v' for more details)
+Global data sent = 827.367 MB (all parties)
+
+Computing best split per node/depth 2 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 97.5961 seconds 
+Data sent = 550.561 MB in ~1343009 rounds (party 0 only; use '-v' for more details)
+Global data sent = 1651.79 MB (all parties)
+
+Computing best split per node/depth 3 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 146.451 seconds 
+Data sent = 824.809 MB in ~2014431 rounds (party 0 only; use '-v' for more details)
+Global data sent = 2474.71 MB (all parties)
+
+Computing best split per node/depth 4 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 243.841 seconds 
+Data sent = 1375.37 MB in ~3357434 rounds (party 0 only; use '-v' for more details)
+Global data sent = 4126.5 MB (all parties)
+
+Computing best split per node/depth 5 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 390.004 seconds 
+Data sent = 2199.5 MB in ~5371779 rounds (party 0 only; use '-v' for more details)
+Global data sent = 6598.9 MB (all parties)
+
+Computing best split per node/depth 6 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 676.202 seconds 
+Data sent = 3848.97 MB in ~9400600 rounds (party 0 only; use '-v' for more details)
+Global data sent = 11547.5 MB (all parties)
+
+Computing best split per node/depth 7 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 954.9 seconds 
+Data sent = 5498.46 MB in ~13429447 rounds (party 0 only; use '-v' for more details)
+Global data sent = 16496.6 MB (all parties)
+
+Computing best split per node/depth 8 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 1343.3 seconds 
+Data sent = 7697.8 MB in ~18801171 rounds (party 0 only; use '-v' for more details)
+Global data sent = 23095 MB (all parties)
+
+Computing best split per node/depth 9 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 1959.31 seconds 
+Data sent = 10995.4 MB in ~26858777 rounds (party 0 only; use '-v' for more details)
+Global data sent = 32988.3 MB (all parties)
+
+Computing best split per node/depth 10 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 2550.74 seconds 
+Data sent = 14294.2 MB in ~34916396 rounds (party 0 only; use '-v' for more details)
+Global data sent = 42885.5 MB (all parties)
+
+Computing best split per node/depth 11 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 2620.44 seconds 
+Data sent = 15119.1 MB in ~36930821 rounds (party 0 only; use '-v' for more details)
+Global data sent = 45360.2 MB (all parties)
+
+Computing best split per node/depth 12 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 2774.8 seconds 
+Data sent = 15943.8 MB in ~38945220 rounds (party 0 only; use '-v' for more details)
+Global data sent = 47834.5 MB (all parties)
+
+Computing best split per node/depth 13 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 2598.46 seconds 
+Data sent = 14844.2 MB in ~36259322 rounds (party 0 only; use '-v' for more details)
+Global data sent = 44535.3 MB (all parties)
+
+Computing best split per node/depth 14 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 2668.88 seconds 
+Data sent = 15394.1 MB in ~37602248 rounds (party 0 only; use '-v' for more details)
+Global data sent = 46185.2 MB (all parties)
+
+Computing best split per node/depth 15 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 2967.84 seconds 
+Data sent = 17043.6 MB in ~41631069 rounds (party 0 only; use '-v' for more details)
+Global data sent = 51133.8 MB (all parties)
+
+Computing best split per node/depth 16 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 3150.54 seconds 
+Data sent = 18143.2 MB in ~44316967 rounds (party 0 only; use '-v' for more details)
+Global data sent = 54432.9 MB (all parties)
+
+Computing best split per node/depth 17 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 3291.69 seconds 
+Data sent = 18967.3 MB in ~46331312 rounds (party 0 only; use '-v' for more details)
+Global data sent = 56905.4 MB (all parties)
+
+Computing best split per node/depth 18 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 3299.95 seconds 
+Data sent = 18967.3 MB in ~46331312 rounds (party 0 only; use '-v' for more details)
+Global data sent = 56905.4 MB (all parties)
+
+Computing best split per node/depth 19 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 3068.21 seconds 
+Data sent = 17592.6 MB in ~42973987 rounds (party 0 only; use '-v' for more details)
+Global data sent = 52781.2 MB (all parties)
+
+Computing best split per node/depth 20 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 3629.24 seconds 
+Data sent = 20891.6 MB in ~51031632 rounds (party 0 only; use '-v' for more details)
+Global data sent = 62678.8 MB (all parties)
+
+Computing best split per node/depth 0 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 966.628 seconds 
+Data sent = 137.956 MB in ~335784 rounds (party 0 only; use '-v' for more details)
+Global data sent = 413.895 MB (all parties)
+
+Computing best split per node/depth 1 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 47.4333 seconds 
+Data sent = 275.772 MB in ~671536 rounds (party 0 only; use '-v' for more details)
+Global data sent = 827.367 MB (all parties)
+
+Computing best split per node/depth 2 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 138.352 seconds 
+Data sent = 550.561 MB in ~1343009 rounds (party 0 only; use '-v' for more details)
+Global data sent = 1651.79 MB (all parties)
+
+Computing best split per node/depth 3 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 2113.34 seconds 
+Data sent = 1100.44 MB in ~2685935 rounds (party 0 only; use '-v' for more details)
+Global data sent = 3301.66 MB (all parties)
+
+Computing best split per node/depth 4 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 3110.87 seconds 
+Data sent = 2199.5 MB in ~5371779 rounds (party 0 only; use '-v' for more details)
+Global data sent = 6598.9 MB (all parties)
+
+Computing best split per node/depth 5 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 1453.16 seconds 
+Data sent = 3574.71 MB in ~8729158 rounds (party 0 only; use '-v' for more details)
+Global data sent = 10724.9 MB (all parties)
+
+Computing best split per node/depth 6 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 3228.65 seconds 
+Data sent = 5498.46 MB in ~13429447 rounds (party 0 only; use '-v' for more details)
+Global data sent = 16496.6 MB (all parties)
+
+Computing best split per node/depth 7 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 4601.69 seconds 
+Data sent = 6597.38 MB in ~16115265 rounds (party 0 only; use '-v' for more details)
+Global data sent = 19793.4 MB (all parties)
+
+Computing best split per node/depth 8 in MPC
+The following benchmarks are including preprocessing (offline phase).
+Time = 5721.15 seconds 
+Data sent = 8522.61 MB in ~20815593 rounds (party 0 only; use '-v' for more details)
+Global data sent = 25569.3 MB (all parties)
+
+MPC best split computation completed for node 8
+Computing best split per node/depth 9 in MPC
